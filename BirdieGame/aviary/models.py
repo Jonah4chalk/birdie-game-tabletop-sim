@@ -52,6 +52,7 @@ class BirdCard(models.Model):
     CHERRY = 17
     RAT = 18
     NECTAR = 19
+    WILD = 20
 
     NEST_TYPE = (
         (GROUND, _("Ground")),
@@ -71,13 +72,13 @@ class BirdCard(models.Model):
     name = models.CharField(max_length=50)
     image = models.ImageField()
     nest_size = models.PositiveIntegerField(default=1, validators=[MaxValueValidator(6)])
-    nest_type = models.IntegerField(choices=NEST_TYPE, default=NONE)
+    # nest_type = models.IntegerField(choices=NEST_TYPE, default=NONE)
     wingspan = models.PositiveIntegerField(default=1)
-    habitats = models.ManyToManyField(Habitat)
-    food_cost = models.ManyToManyField(Food)
+    # habitats = models.ManyToManyField(Habitat)
+    # food_cost = models.ManyToManyField(Food)
     feathers = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(9)])
     ability_desc = models.CharField(max_length=200)
-    ability_type = models.IntegerField(choices=ABILITY_TYPE, default=WHITE)
+    # ability_type = models.IntegerField(choices=ABILITY_TYPE, default=WHITE)
     cached_food = models.PositiveIntegerField(default=0)
     tucked_cards = models.PositiveIntegerField(default=0)
 
