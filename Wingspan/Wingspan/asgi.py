@@ -1,5 +1,5 @@
 """
-ASGI config for BirdieGame project.
+ASGI config for Wingspan project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'BirdieGame.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Wingspan.settings')
 
 application = get_asgi_application()
