@@ -86,7 +86,6 @@ class BirdCard(models.Model):
         return self.name
     
 class Board(models.Model):
-    
     forest_1 = models.ForeignKey(BirdCard, related_name="Forest1", on_delete=models.SET_NULL, null=True)
     forest_2 = models.ForeignKey(BirdCard, related_name="Forest2", on_delete=models.SET_NULL, null=True)
     forest_3 = models.ForeignKey(BirdCard, related_name="Forest3", on_delete=models.SET_NULL, null=True)
