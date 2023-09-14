@@ -1,5 +1,6 @@
 .container {
-    grid-template-columns: repeat(5, 1fr);
+    display: grid;
+    grid-template-columns: auto, auto, auto, auto, auto;
 }
 
 .grid-item {
