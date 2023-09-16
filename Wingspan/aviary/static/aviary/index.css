@@ -1,13 +1,25 @@
-.container {
+.board {
     display: grid;
-    grid-template-columns: auto, auto, auto, auto, auto;
+    grid-template-columns: auto auto auto auto auto;
+    grid-template-rows: auto auto auto;
+    grid-gap: 5px;
+    height: 100vh;
 }
 
-.grid-item {
-    background-color: rgba(255, 255, 255, 0.8);
+.board > * {
     border: 1px solid rgba(0, 0, 0, 0.8);
-    padding: 20px;
     font-size: 30px;
     text-align: center;
 }
 
+.forest {
+    background-color: rgba(44, 233, 2, 0.4);
+}
+
+.grassland {
+    background-color: rgba(233, 214, 2, 0.4);
+}
+
+.wetland {
+    background-color: rgba(2, 152, 233, 0.4);
+}
