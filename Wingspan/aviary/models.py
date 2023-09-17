@@ -23,18 +23,25 @@ class BirdCard(models.Model):
         ('p', 'Pink'),
     )
 
+    # direction facing
+    FACING_DIRECTION = (
+        ('r', 'Right'),
+        ('l', 'Left'),
+        ('f', 'Forward'),
+    )
+
     name = models.CharField(max_length=50)
     image = models.ImageField()
     nest_size = models.PositiveIntegerField(default=1, validators=[MaxValueValidator(6)])
     nest_type = models.CharField(max_length=1, choices=NEST_TYPES, default='n')
     wingspan = models.PositiveIntegerField(default=1)
     # habitats = models.ManyToManyField(Habitat)
-    # food_cost = models.ManyToManyField(Food)
     feathers = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(9)])
     ability_desc = models.CharField(max_length=200)
     ability_type = models.CharField(max_length=1, choices=ABILITY_TYPES, default='w')
     cached_food = models.PositiveIntegerField(default=0)
     tucked_cards = models.PositiveIntegerField(default=0)
+    direction_facing = models.CharField(max_length=1, choices=FACING_DIRECTION, default='f')
 
     def __str__(self):
         return self.name
