@@ -35,7 +35,7 @@ class BirdCard(models.Model):
     )
 
     name = models.CharField(max_length=50)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='bird_images/', null=False)
     nest_size = models.PositiveIntegerField(default=1, validators=[MaxValueValidator(6)])
     nest_type = models.CharField(max_length=1, choices=NEST_TYPES, default='n')
     wingspan = models.PositiveIntegerField(default=1)
