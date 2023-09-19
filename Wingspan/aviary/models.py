@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
-class Habitats(models.Model):
+class Habitat(models.Model):
     id = models.AutoField(primary_key=True)
     habitat_name = models.CharField(max_length=9, default="forest")
 
@@ -41,7 +41,7 @@ class BirdCard(models.Model):
     nest_size = models.PositiveIntegerField(default=1, validators=[MaxValueValidator(6)])
     nest_type = models.CharField(max_length=1, choices=NEST_TYPES, default='n')
     wingspan = models.PositiveIntegerField(default=1)
-    habitats = models.ManyToManyField(Habitats)
+    habitats = models.ManyToManyField(Habitat)
     feathers = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(9)])
     ability_desc = models.CharField(max_length=200)
     ability_type = models.CharField(max_length=1, choices=ABILITY_TYPES, default='w')
@@ -72,7 +72,7 @@ class Board(models.Model):
     wetland_4 = models.ForeignKey(BirdCard, related_name="Wetland4", on_delete=models.SET_NULL, null=True)
     wetland_5 = models.ForeignKey(BirdCard, related_name="Wetland5", on_delete=models.SET_NULL, null=True)
 
-class Foods(models.Model):
+class Food(models.Model):
     id = models.AutoField(primary_key=True)
     food_name = models.CharField(max_length=6, default="default")
 
@@ -81,4 +81,4 @@ class Foods(models.Model):
 
 class FoodJunction(models.Model):
     card_id = models.ForeignKey(BirdCard, on_delete=models.CASCADE)
-    food_id = models.ForeignKey(Foods, on_delete=models.CASCADE)
+    food_id = models.ForeignKey(Food, on_delete=models.CASCADE)
