@@ -4,7 +4,8 @@
 
 <div class="board">
   <div class="forest">
-    <img src="{{ board.forest_1.image.url }}">
+    <p>{{ board.forest_1.name }}</p>
+    <img src="{% static 'aviary/left_facing.jpg' %}" alt="{{ board.forest_1.name }}"/>
   </div>
   <div class="forest">2</div>
   <div class="forest">3</div>
