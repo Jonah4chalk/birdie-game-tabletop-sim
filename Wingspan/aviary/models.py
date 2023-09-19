@@ -7,6 +7,9 @@ class Habitats(models.Model):
     id = models.AutoField(primary_key=True)
     habitat_name = models.CharField(max_length=9, default="forest")
 
+    def __str__(self):
+        return self.habitat_name
+
 class BirdCard(models.Model):
     # nest types
     NEST_TYPES = (
@@ -35,11 +38,10 @@ class BirdCard(models.Model):
     )
 
     name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='bird_images/', null=False)
     nest_size = models.PositiveIntegerField(default=1, validators=[MaxValueValidator(6)])
     nest_type = models.CharField(max_length=1, choices=NEST_TYPES, default='n')
     wingspan = models.PositiveIntegerField(default=1)
-    habitats = models.ManyToManyField(Habitats,)
+    habitats = models.ManyToManyField(Habitats)
     feathers = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(9)])
     ability_desc = models.CharField(max_length=200)
     ability_type = models.CharField(max_length=1, choices=ABILITY_TYPES, default='w')
