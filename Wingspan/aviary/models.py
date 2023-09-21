@@ -54,23 +54,23 @@ class BirdCard(models.Model):
     
 class Board(models.Model):
     forest_nectar = models.PositiveIntegerField(default=0)
-    forest_1 = models.ForeignKey(BirdCard, related_name="Forest1", on_delete=models.SET_NULL, null=True)
-    forest_2 = models.ForeignKey(BirdCard, related_name="Forest2", on_delete=models.SET_NULL, null=True)
-    forest_3 = models.ForeignKey(BirdCard, related_name="Forest3", on_delete=models.SET_NULL, null=True)
-    forest_4 = models.ForeignKey(BirdCard, related_name="Forest4", on_delete=models.SET_NULL, null=True)
-    forest_5 = models.ForeignKey(BirdCard, related_name="Forest5", on_delete=models.SET_NULL, null=True)
+    forest_1 = models.ForeignKey(BirdCard, related_name="Forest1", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_2 = models.ForeignKey(BirdCard, related_name="Forest2", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_3 = models.ForeignKey(BirdCard, related_name="Forest3", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_4 = models.ForeignKey(BirdCard, related_name="Forest4", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_5 = models.ForeignKey(BirdCard, related_name="Forest5", on_delete=models.SET_NULL, null=True, blank=True)
     grassland_nectar = models.PositiveIntegerField(default=0)
-    grassland_1 = models.ForeignKey(BirdCard, related_name="Grassland1", on_delete=models.SET_NULL, null=True)
-    grassland_2 = models.ForeignKey(BirdCard, related_name="Grassland2", on_delete=models.SET_NULL, null=True)
-    grassland_3 = models.ForeignKey(BirdCard, related_name="Grassland3", on_delete=models.SET_NULL, null=True)
-    grassland_4 = models.ForeignKey(BirdCard, related_name="Grassland4", on_delete=models.SET_NULL, null=True)
-    grassland_5 = models.ForeignKey(BirdCard, related_name="Grassland5", on_delete=models.SET_NULL, null=True)
+    grassland_1 = models.ForeignKey(BirdCard, related_name="Grassland1", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_2 = models.ForeignKey(BirdCard, related_name="Grassland2", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_3 = models.ForeignKey(BirdCard, related_name="Grassland3", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_4 = models.ForeignKey(BirdCard, related_name="Grassland4", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_5 = models.ForeignKey(BirdCard, related_name="Grassland5", on_delete=models.SET_NULL, null=True, blank=True)
     wetland_nectar = models.PositiveIntegerField(default=0)
-    wetland_1 = models.ForeignKey(BirdCard, related_name="Wetland1", on_delete=models.SET_NULL, null=True)
-    wetland_2 = models.ForeignKey(BirdCard, related_name="Wetland2", on_delete=models.SET_NULL, null=True)
-    wetland_3 = models.ForeignKey(BirdCard, related_name="Wetland3", on_delete=models.SET_NULL, null=True)
-    wetland_4 = models.ForeignKey(BirdCard, related_name="Wetland4", on_delete=models.SET_NULL, null=True)
-    wetland_5 = models.ForeignKey(BirdCard, related_name="Wetland5", on_delete=models.SET_NULL, null=True)
+    wetland_1 = models.ForeignKey(BirdCard, related_name="Wetland1", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_2 = models.ForeignKey(BirdCard, related_name="Wetland2", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_3 = models.ForeignKey(BirdCard, related_name="Wetland3", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_4 = models.ForeignKey(BirdCard, related_name="Wetland4", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_5 = models.ForeignKey(BirdCard, related_name="Wetland5", on_delete=models.SET_NULL, null=True, blank=True)
 
 class Food(models.Model):
     id = models.AutoField(primary_key=True)
@@ -80,5 +80,12 @@ class Food(models.Model):
         return self.food_name
 
 class FoodJunction(models.Model):
-    card_id = models.ForeignKey(BirdCard, on_delete=models.CASCADE)
-    food_id = models.ForeignKey(Food, on_delete=models.CASCADE)
+    card = models.ForeignKey(BirdCard, on_delete=models.CASCADE)
+    food = models.ManyToManyField(Food)
+
+    def __str__(self):
+        food_str = ""
+        for f in self.food.all():
+            food_str = food_str + f.food_name + " or "
+        food_str = food_str[:-4]
+        return self.card.name + " eats " + food_str
