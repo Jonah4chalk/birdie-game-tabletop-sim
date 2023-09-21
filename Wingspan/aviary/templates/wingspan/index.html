@@ -4,8 +4,38 @@
 
 <div class="board">
   <div class="forest">
-    <p>{{ board.forest_1.name }}</p>
-    <img src="{% static 'aviary/left_facing.jpg' %}" alt="{{ board.forest_1.name }}"/>
+    {% if board.forest_1 %}
+      <div class="top-row">
+        {% for habitat in board.forest_1.habitats.all %}
+          {% if habitat.habitat_name == "Forest" %}
+            <img src="{% static 'aviary/forest.jpg' %}" alt="forest"/>
+          {% elif habitat.habitat_name == "Grassland" %}
+            <img src="{% static 'aviary/grassland.jpg' %}" alt="grassland"/>
+          {% elif habitat.habitat_name == "Wetland" %}
+            <img src="{% static 'aviary/wetland.jpg' %}" alt="wetland"/>
+          {% endif %}
+        {% endfor %}
+        <p>{{ board.forest_1.name }}</p>
+      </div>
+
+      {% if board.forest_1.direction_facing == "l" %}
+        <img src="{% static 'aviary/left_facing.jpg' %}" alt="{{ board.forest_1.name }}"/>
+      {% elif board.forest_1.direction_facing == "r" %}
+        <img src="{% static 'aviary/right_facing.jpg' %}" alt="{{ board.forest_1.name }}"/>
+      {% elif board.forest_1.direction_facing == "f" %}
+        <img src="{% static 'aviary/forward_facing.jpg' %}" alt="{{ board.forest_1.name }}"/>
+      {% else %}
+      {% endif %}
+
+      <div class="feathers">
+        <img src="{% static 'aviary/feather.jpg' %}" alt="feathers"/>
+        <p>{{ board.forest_1.feathers }}</p>
+      </div>
+
+      <div class="abilities ability-{{ board.forest_1.ability_type }}">
+        <p>{{ board.forest_1.ability_desc }}</p>
+      </div>
+    {% endif %}
   </div>
   <div class="forest">2</div>
   <div class="forest">3</div>
