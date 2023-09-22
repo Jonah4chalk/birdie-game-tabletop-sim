@@ -24,21 +24,7 @@ def board(request, board_id):
         board = Board.objects.get(pk=board_id)
     except Board.DoesNotExist:
         raise Http404("Board does not exist")
-    try:
-        f1_food = []
-        f1_query = FoodJunction.objects.filter(card_id=board.forest_1.id)
-        for row in f1_query:
-            options = []
-            for f in row.food.all():
-                options.append(f.food_name)
-            f1_food.append(options)
-                
-    except FoodJunction.DoesNotExist:
-        # this bird does not need food to be played, pass nothing
-        f1_food = []
-        
     context = {
         "board": board,
-        "f1_food": f1_food,
     }
-    return render(request, "wingspan/index.html", context)
+    return render(request, "wingspan/board.html", context)

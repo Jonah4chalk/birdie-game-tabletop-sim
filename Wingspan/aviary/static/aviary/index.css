@@ -1,29 +1,4 @@
-.board {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-gap: 5px;
-    height: 100vh;
-}
 
-.board > * {
-    border: 1px solid rgba(0, 0, 0, 0.8);
-    font-size: 20px;
-    text-align: center;
-    position: relative;
-}
-
-.forest {
-    background-color: rgba(44, 233, 2, 0.4);
-}
-
-.grassland {
-    background-color: rgba(233, 214, 2, 0.4);
-}
-
-.wetland {
-    background-color: rgba(2, 152, 233, 0.4);
-}
 
 div > img {
     max-height: 100px;
@@ -67,13 +42,6 @@ div > img {
 
 h1 {
     margin: 0;
-}
-
-.board > * > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    justify-items: center;
 }
 
 .name-row {
