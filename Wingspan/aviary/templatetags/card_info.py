@@ -8,7 +8,10 @@ def card_info(bird):
     try:
         birdcard = BirdCard.objects.get(name=bird)
     except BirdCard.DoesNotExist:
-        raise Http404("BirdCard does not exist")
+        return {
+            "bird": None,
+            "food": []
+        }
     food = []
     try:
         q = FoodJunction.objects.filter(card_id=birdcard.id)

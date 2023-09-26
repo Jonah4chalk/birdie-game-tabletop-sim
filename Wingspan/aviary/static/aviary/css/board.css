@@ -1,6 +1,6 @@
 .board {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 50px 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     grid-gap: 5px;
     height: 100vh;
@@ -30,4 +30,8 @@
 
 .wetland {
     background-color: rgba(2, 152, 233, 0.4);
+}
+
+.nectar {
+    background-color: pink;
 }
