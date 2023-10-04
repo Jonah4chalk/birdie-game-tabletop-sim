@@ -4,22 +4,115 @@
 <link rel="stylesheet" href="{% static 'aviary/css/board.css' %}">
 
 <div class="board">
+
     <div class="nectar">{{ board.forest_nectar }}</div>
-    <div class="forest" onClick="alert('Clickity')">{% card_info bird=board.forest_1.name %}</div>
-    <div class="forest">{% card_info bird=board.forest_2 %}</div>
-    <div class="forest">{% card_info bird=board.forest_3 %}</div>
-    <div class="forest">{% card_info bird=board.forest_4 %}</div>
-    <div class="forest">{% card_info bird=board.forest_5 %}</div>
+    {% if board.forest_1 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.forest_1.pk %}">
+    {% endif %}
+    <div class="forest" id="forest_1">{% card_info bird=board.forest_1 %}</div>
+    {% if board.forest_1 is not None %}
+        </a>
+    {% endif %}
+    {% if board.forest_2 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.forest_2.pk %}">
+    {% endif %}
+    <div class="forest" id="forest_2">{% card_info bird=board.forest_2 %}</div>
+    {% if board.forest_2 is not None %}
+        </a>
+    {% endif %}
+    {% if board.forest_3 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.forest_3.pk %}">
+    {% endif %}
+    <div class="forest" id="forest_3">{% card_info bird=board.forest_3 %}</div>
+    {% if board.forest_3 is not None %}
+        </a>
+    {% endif %}
+    {% if board.forest_4 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.forest_4.pk %}">
+    {% endif %}
+    <div class="forest" id="forest_4">{% card_info bird=board.forest_4 %}</div>
+    {% if board.forest_4 is not None %}
+        </a>
+    {% endif %}
+    {% if board.forest_5 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.forest_5.pk %}">
+    {% endif %}
+    <div class="forest" id="forest_5">{% card_info bird=board.forest_5 %}</div>
+    {% if board.forest_5 is not None %}
+        </a>
+    {% endif %}
+
     <div class="nectar">{{ board.grassland_nectar }}</div>
-    <div class="grassland">{% card_info bird=board.grassland_1 %}</div>
-    <div class="grassland">{% card_info bird=board.grassland_2 %}</div>
-    <div class="grassland">{% card_info bird=board.grassland_3 %}</div>
-    <div class="grassland">{% card_info bird=board.grassland_4 %}</div>
-    <div class="grassland">{% card_info bird=board.grassland_5 %}</div>
+    {% if board.grassland_1 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.grassland_1.pk %}">
+    {% endif %}
+    <div class="grassland" id="grassland_1">{% card_info bird=board.grassland_1 %}</div>
+    {% if board.grassland_1 is not None %}
+        </a>
+    {% endif %}
+    {% if board.grassland_2 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.grassland_2.pk %}">
+    {% endif %}
+    <div class="grassland" id="grassland_2">{% card_info bird=board.grassland_2 %}</div>
+    {% if board.grassland_2 is not None %}
+        </a>
+    {% endif %}
+    {% if board.grassland_3 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.grassland_3.pk %}">
+    {% endif %}
+    <div class="grassland" id="grassland_3">{% card_info bird=board.grassland_3 %}</div>
+    {% if board.grassland_3 is not None %}
+        </a>
+    {% endif %}
+    {% if board.grassland_4 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.grassland_4.pk %}">
+    {% endif %}
+    <div class="grassland" id="grassland_4">{% card_info bird=board.grassland_4 %}</div>
+    {% if board.grassland_4 is not None %}
+        </a>
+    {% endif %}
+    {% if board.grassland_5 is not None %}
+        <a href="{% url 'birdcard_update' board.pk board.grassland_5.pk %}">
+    {% endif %}
+    <div class="grassland" id="grassland_5">{% card_info bird=board.grassland_5 %}</div>
+    {% if board.grassland_5 is not None %}
+        </a>
+    {% endif %}
+
     <div class="nectar">{{ board.wetland_nectar }}</div>
-    <div class="wetland">{% card_info bird=board.wetland_1 %}</div>
-    <div class="wetland">{% card_info bird=board.wetland_2 %}</div>
-    <div class="wetland">{% card_info bird=board.wetland_3 %}</div>
-    <div class="wetland">{% card_info bird=board.wetland_4 %}</div>
-    <div class="wetland">{% card_info bird=board.wetland_5 %}</div>
+    {% if board.wetland_1 is not None %}
+    <a href="{% url 'birdcard_update' board.pk board.wetland_1.pk %}">
+    {% endif %}
+    <div class="wetland" id="wetland_1">{% card_info bird=board.wetland_1 %}</div>
+    {% if board.wetland_1 is not None %}
+        </a>
+    {% endif %}
+    {% if board.wetland_2 is not None %}
+    <a href="{% url 'birdcard_update' board.pk board.wetland_2.pk %}">
+    {% endif %}
+    <div class="wetland" id="wetland_2">{% card_info bird=board.wetland_2 %}</div>
+    {% if board.wetland_2 is not None %}
+        </a>
+    {% endif %}
+    {% if board.wetland_3 is not None %}
+    <a href="{% url 'birdcard_update' board.pk board.wetland_3.pk %}">
+    {% endif %}
+    <div class="wetland" id="wetland_3">{% card_info bird=board.wetland_3 %}</div>
+    {% if board.wetland_3 is not None %}
+        </a>
+    {% endif %}
+    {% if board.wetland_4 is not None %}
+    <a href="{% url 'birdcard_update' board.pk board.wetland_4.pk %}">
+    {% endif %}
+    <div class="wetland" id="wetland_4">{% card_info bird=board.wetland_4 %}</div>
+    {% if board.wetland_4 is not None %}
+        </a>
+    {% endif %}
+    {% if board.wetland_5 is not None %}
+    <a href="{% url 'birdcard_update' board.pk board.wetland_5.pk %}">
+    {% endif %}
+    <div class="wetland" id="wetland_5">{% card_info bird=board.wetland_5 %}</div>
+    {% if board.wetland_5 is not None %}
+        </a>
+    {% endif %}
 </div>

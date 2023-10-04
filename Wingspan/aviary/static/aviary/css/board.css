@@ -13,7 +13,7 @@
     position: relative;
 }
 
-.board > * > * {
+.forest > *, .grassland > *, .wetland > * {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -34,4 +34,9 @@
 
 .nectar {
     background-color: pink;
+}
+
+a {
+    color: black;
+    text-decoration: none;
 }

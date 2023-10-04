@@ -3,6 +3,7 @@ from django.template import loader
 from .models import BirdCard, Board
 from django.http import Http404
 from django.views.generic.edit import UpdateView
+from django.urls import reverse_lazy
 
 # Create your views here.
 from django.http import HttpResponse
@@ -37,3 +38,6 @@ class BirdUpdateView(UpdateView):
         "tucked_cards"
     ]
     template_name_suffix = "_update"
+    def get_success_url(self) -> str:
+        board_id = self.kwargs["board_id"]
+        return reverse_lazy("board", kwargs={"board_id": board_id})
