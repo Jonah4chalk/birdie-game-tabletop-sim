@@ -29,6 +29,8 @@
             <img src="{% static 'aviary/img/fish.jpg' %}" alt="fish"/>
           {% elif f == "Nectar" %}
             <img src="{% static 'aviary/img/nectar.jpg' %}" alt="nectar"/>
+          {% elif f == "Wild" %}
+            <img src="{% static 'aviary/img/wild.jpg' %}" alt="wild"/>
           {% endif %}
           {% if not forloop.last %}
             /
@@ -80,6 +82,14 @@
     <div class="wingspan">
       <h1>&#8596;</h1>
       <p>{{ bird.wingspan }}</p>
+    </div>
+    <div class="cached_food">
+      <img src="{% static 'aviary/img/wild.jpg' %}" width="50px" height="50px" alt="wild">
+      <p>{{ bird.cached_food }}</p>
+    </div>
+    <div class="tucked_cards">
+      <img src="{% static 'aviary/img/tucked_cards.jpg' %}" alt="tucked_cards">
+      <p>{{ bird.tucked_cards }}</p>
     </div>
   </div>
 

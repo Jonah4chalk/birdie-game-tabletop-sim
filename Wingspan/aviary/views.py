@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.template import loader
 from .models import BirdCard, Board
-from django.http import Http404
+from django.http import Http404, QueryDict
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
+from django import forms
 
 # Create your views here.
 from django.http import HttpResponse
@@ -40,4 +41,25 @@ class BirdUpdateView(UpdateView):
     template_name_suffix = "_update"
     def get_success_url(self) -> str:
         board_id = self.kwargs["board_id"]
+        return reverse_lazy("board", kwargs={"board_id": board_id})
+    
+class BirdAddModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(BirdAddModelForm, self).__init__(*args, **kwargs)
+        field_name = kwargs.pop('board_slot', None)
+        if field_name:
+            for field in self.fields.copy():
+                if field != field_name:
+                    del self.fields[field]
+
+    class Meta:
+        model = Board
+        exclude = ()
+    
+class BirdAddView(UpdateView):
+    model = Board
+    form_class = BirdAddModelForm
+    template_name = "aviary/bird_add.html"
+    def get_success_url(self) -> str:
+        board_id = self.kwargs["pk"]
         return reverse_lazy("board", kwargs={"board_id": board_id})

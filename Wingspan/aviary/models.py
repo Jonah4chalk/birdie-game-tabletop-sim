@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator
 from django.utils.translation import gettext_lazy as _
+
 # Create your models here.
 
 class Habitat(models.Model):
@@ -89,3 +90,4 @@ class FoodJunction(models.Model):
             food_str = food_str + f.food_name + " or "
         food_str = food_str[:-4]
         return self.card.name + " eats " + food_str
+    
