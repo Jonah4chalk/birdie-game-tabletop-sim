@@ -1,25 +1,25 @@
 {% load static %}
 {% load card_info %}
 
-<link rel="stylesheet" href="{% static 'aviary/css/board.css' %}">
+<link rel="stylesheet" href="{% static 'wingspan/css/board.css' %}">
 
+<a href="{% url 'bird_add' board.pk %}" class="button">Edit Board</a>
 <div class="board">
-
     <div class="nectar">{{ board.forest_nectar }}</div>
     {% if board.forest_1 is not None %}
         <a href="{% url 'birdcard_update' board.pk board.forest_1.pk %}">
-    {% else %}
-        <a href="{% url 'bird_add' board.pk 'forest_1' %}">
     {% endif %}
     <div class="forest" id="forest_1">{% card_info bird=board.forest_1 %}</div>
-    </a>
+    {% if board.forest_1 is not None %}
+        </a>
+    {% endif %}
     {% if board.forest_2 is not None %}
         <a href="{% url 'birdcard_update' board.pk board.forest_2.pk %}">
-    {% else %}
-        <a href="{% url 'bird_add' board.pk 'forest_2' %}">
     {% endif %}
     <div class="forest" id="forest_2">{% card_info bird=board.forest_2 %}</div>
-    </a>
+    {% if board.forest_2 is not None %}
+        </a>
+    {% endif %}
     {% if board.forest_3 is not None %}
         <a href="{% url 'birdcard_update' board.pk board.forest_3.pk %}">
     {% endif %}
