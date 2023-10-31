@@ -1,3 +1,7 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'aviary/css/birdcard_update.css' %}">
+
+<i></i>
 <a href="{{request.META.HTTP_REFERER}}">Back</a>
 <form method="post">{% csrf_token %}
     {{ form.as_p }}

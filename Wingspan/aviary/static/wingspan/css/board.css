@@ -52,9 +52,10 @@ a.button {
     background: #00c3e6;
     padding: 10px;
     text-align: center;
+    font-size: 22px;
     border-radius: 5px;
     color: white;
     font-weight: bold;
     line-height: 25px;
-    margin: 5px 0px;
+    margin: 10px 0px;
 }

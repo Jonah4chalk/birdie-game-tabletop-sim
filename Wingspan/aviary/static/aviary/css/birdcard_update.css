@@ -1,0 +1,14 @@
+i {
+    padding: 3px;
+    border: solid black;
+    border-width: 3px 0 0 3px;
+    display: inline-block;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    padding: 5px;
+}
