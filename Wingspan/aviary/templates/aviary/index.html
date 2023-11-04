@@ -1,0 +1,12 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'aviary/css/index.css' %}">
+
+<head></head>
+<body>
+    <h1>Bird Aviary Simulator</h1>
+    <div class="options">
+        <a class="new" href="{% url 'create_board' %}">New Board</a>
+        <a class="edit" href="">View Existing Boards</a>
+    </div>
+</body>

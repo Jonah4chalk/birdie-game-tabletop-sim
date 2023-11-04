@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.template import loader
 from .models import BirdCard, Board
-from django.http import Http404, QueryDict
+from django.http import Http404
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 from django import forms
@@ -11,7 +11,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the aviary.")
+    return render(request, "aviary/index.html", {})
 
 def detail(request, bird_name):
     try:
@@ -20,17 +20,17 @@ def detail(request, bird_name):
         raise Http404("Detail: BirdCard does not exist")
     
     context = {"birdcard": birdcard}
-    return render(request, "wingspan/detail.html", context)
+    return render(request, "aviary/detail.html", context)
 
-def board(request, board_id):
+def board(request, pk):
     try:
-        board = Board.objects.get(pk=board_id)
+        board = Board.objects.get(pk=pk)
     except Board.DoesNotExist:
         raise Http404("Board does not exist")
     context = {
         "board": board,
     }
-    return render(request, "wingspan/board.html", context)
+    return render(request, "aviary/board.html", context)
 
 class BirdUpdateView(UpdateView):
     model = BirdCard
@@ -63,3 +63,7 @@ class BirdAddView(UpdateView):
     def get_success_url(self) -> str:
         board_id = self.kwargs["pk"]
         return reverse_lazy("board", kwargs={"board_id": board_id})
+
+def create_board(request):
+    new_board = Board.objects.create()
+    return redirect('board', pk=new_board.pk)

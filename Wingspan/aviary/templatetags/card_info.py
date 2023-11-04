@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 from django.http import Http404
 
-@register.inclusion_tag("../templates/wingspan/index.html")
+@register.inclusion_tag("../templates/aviary/birdcard.html")
 def card_info(bird):
     try:
         birdcard = BirdCard.objects.get(name=bird)
