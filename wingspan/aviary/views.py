@@ -40,8 +40,8 @@ class BirdUpdateView(UpdateView):
     ]
     template_name_suffix = "_update"
     def get_success_url(self) -> str:
-        board_id = self.kwargs["board_id"]
-        return reverse_lazy("board", kwargs={"board_id": board_id})
+        board_pk = self.kwargs["board_id"]
+        return reverse_lazy("board", kwargs={"pk": board_pk})
     
 class BirdAddModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -61,8 +61,8 @@ class BirdAddView(UpdateView):
     form_class = BirdAddModelForm
     template_name = "aviary/bird_add.html"
     def get_success_url(self) -> str:
-        board_id = self.kwargs["pk"]
-        return reverse_lazy("board", kwargs={"board_id": board_id})
+        board_pk = self.kwargs["pk"]
+        return reverse_lazy("board", kwargs={"pk": board_pk})
 
 def create_board(request):
     new_board = Board.objects.create()
