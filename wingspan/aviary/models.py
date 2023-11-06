@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator
+from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
@@ -53,6 +54,10 @@ class BirdCard(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def clean(self):
+        if self.eggs > self.nest_size:
+            raise ValidationError("This bird's nest cannot fit all of these eggs!")
     
 class Board(models.Model):
     forest_nectar = models.PositiveIntegerField(default=0)

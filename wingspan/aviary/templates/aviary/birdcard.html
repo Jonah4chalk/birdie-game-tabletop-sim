@@ -76,7 +76,7 @@
         <img src="{% static 'aviary/img/stick.jpg' %}" alt="stick nest"/>
       {% endif %}
       {% if bird.nest_type != 'n' %}
-        <p>{{ bird.nest_size }}</p>
+        <p>{{ bird.eggs }}/{{ bird.nest_size }}</p>
       {% endif %}
     </div>
     <div class="wingspan">

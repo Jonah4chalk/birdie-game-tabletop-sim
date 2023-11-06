@@ -36,7 +36,8 @@ class BirdUpdateView(UpdateView):
     model = BirdCard
     fields = [
         "cached_food",
-        "tucked_cards"
+        "tucked_cards",
+        "eggs"
     ]
     template_name_suffix = "_update"
     def get_success_url(self) -> str:
