@@ -46,6 +46,7 @@ class BirdCard(models.Model):
     feathers = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(9)])
     ability_desc = models.CharField(max_length=200)
     ability_type = models.CharField(max_length=1, choices=ABILITY_TYPES, default='w')
+    eggs = models.PositiveIntegerField(default=0)
     cached_food = models.PositiveIntegerField(default=0)
     tucked_cards = models.PositiveIntegerField(default=0)
     direction_facing = models.CharField(max_length=1, choices=FACING_DIRECTION, default='f')
