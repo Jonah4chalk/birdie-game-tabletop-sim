@@ -3,8 +3,11 @@
 <!-- {% debug %} -->
 
 <link rel="stylesheet" href="{% static 'aviary/css/board.css' %}">
-
-<a href="{% url 'bird_add' board.pk %}" class="button">Edit Board</a>
+<div class="navbar">
+    <a href="" class="button" id="bonus">Bonus Cards</a>
+    <a href="{% url 'bird_add' board.pk %}" class="button" id="edit">Edit Board</a>
+    <a href="" class="button" id="round-goals">End of Round Goals</a>
+</div>
 <div class="board">
     <div class="nectar">{{ board.forest_nectar }}</div>
     {% if board.forest_1 is not None %}

@@ -4,6 +4,8 @@
     grid-template-rows: 1fr 1fr 1fr;
     grid-gap: 5px;
     height: 100vh;
+    grid-auto-rows: max-content;
+    grid-auto-columns: max-content;
 }
 
 .board > * {
@@ -48,8 +50,6 @@ a.button {
 
     display: block;
     box-sizing: border-box;
-    width: 100%;
-    background: #00c3e6;
     padding: 10px;
     text-align: center;
     font-size: 22px;
@@ -57,5 +57,26 @@ a.button {
     color: white;
     font-weight: bold;
     line-height: 25px;
-    margin: 10px 0px;
+    margin-bottom: 10px;
+}
+
+a.button#edit {
+    width: 50%;
+    background: #00c3e6;
+}
+
+a.button#round-goals {
+    width: 20%;
+    border-color: black;
+    background: purple;
+}
+
+a.button#bonus {
+    width: 20%;
+    background:darkgreen;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
 }
