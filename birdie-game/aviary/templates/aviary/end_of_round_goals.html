@@ -1,0 +1,26 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'aviary/css/end_of_round_goals.css' %}">
+<div class="navbar">
+    <a href="{% url 'board' board_pk %}" class="button" id="board">Board</a>
+</div>
+<div class="r1">
+    {% if goals.get(round=1) is not None %}
+        <p>{{ goals.get(round=1).goal }}</p>
+    {% endif %}
+</div>
+<div class="r2">
+    {% if goals.get(round=2) is not None %}
+        <p>{{ goals.get(round=2).goal }}</p>
+    {% endif %}
+</div>
+<div class="r3">
+    {% if goals.get(round=3) is not None %}
+        <p>{{ goals.get(round=3).goal }}</p>
+    {% endif %}
+</div>
+<div class="r4">
+    {% if goals.get(round=4) is not None %}
+        <p>{{ goals.get(round=4).goal }}</p>
+    {% endif %}
+</div>

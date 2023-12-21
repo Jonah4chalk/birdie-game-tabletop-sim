@@ -97,3 +97,10 @@ class FoodJunction(models.Model):
         food_str = food_str[:-4]
         return self.card.name + " eats " + food_str
     
+class EndRoundGoal(models.Model):
+    goal = models.CharField(max_length=200)
+    round = models.PositiveIntegerField(default=1)
+    board = models.ForeignKey(Board, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.goal

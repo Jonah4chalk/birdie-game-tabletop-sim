@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.template import loader
-from .models import BirdCard, Board
+from .models import BirdCard, Board, EndRoundGoal
 from django.http import Http404
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
@@ -68,3 +68,16 @@ class BirdAddView(UpdateView):
 def create_board(request):
     new_board = Board.objects.create()
     return redirect('board', pk=new_board.pk)
+
+def end_of_round_goals(request, pk):
+    try:
+        board = Board.objects.get(pk=pk)
+    except Board.DoesNotExist:
+        raise Http404("Board does not exist")
+    
+    end_of_round_goals = EndRoundGoal.objects.filter(board=board)
+    context = {
+        "board_pk": board.pk,
+        "goals": end_of_round_goals,
+        }
+    return render(request, "aviary/end_of_round_goals.html", context)
