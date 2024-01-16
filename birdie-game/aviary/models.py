@@ -58,6 +58,9 @@ class BirdCard(models.Model):
     def clean(self):
         if self.eggs > self.nest_size:
             raise ValidationError("This bird's nest cannot fit all of these eggs!")
+        
+    class Meta:
+        ordering = ['name']
     
 class Board(models.Model):
     forest_nectar = models.PositiveIntegerField(default=0)
@@ -96,6 +99,9 @@ class FoodJunction(models.Model):
             food_str = food_str + f.food_name + " or "
         food_str = food_str[:-4]
         return self.card.name + " eats " + food_str
+    
+    class Meta:
+        ordering = ['card__name']
     
 class EndRoundGoal(models.Model):
     goal = models.CharField(max_length=200)
