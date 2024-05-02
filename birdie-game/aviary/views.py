@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.template import loader
 from .models import BirdCard, Board, EndRoundGoal
 from django.http import Http404
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, FormView
 from django.urls import reverse_lazy
 from django import forms
 
@@ -76,8 +76,27 @@ def end_of_round_goals(request, pk):
         raise Http404("Board does not exist")
     
     end_of_round_goals = EndRoundGoal.objects.filter(board=board)
+    try:
+        round_1 = end_of_round_goals.get(round=1)
+    except EndRoundGoal.DoesNotExist:
+        round_1 = None
+    try:
+        round_2 = end_of_round_goals.get(round=2)
+    except EndRoundGoal.DoesNotExist:
+        round_2 = None
+    try:
+        round_3 = end_of_round_goals.get(round=3)
+    except EndRoundGoal.DoesNotExist:
+        round_3 = None
+    try:
+        round_4 = end_of_round_goals.get(round=4)
+    except EndRoundGoal.DoesNotExist:
+        round_4 = None
     context = {
         "board_pk": board.pk,
-        "goals": end_of_round_goals,
-        }
+        "round_1": round_1,
+        "round_2": round_2,
+        "round_3": round_3,
+        "round_4": round_4,
+    }
     return render(request, "aviary/end_of_round_goals.html", context)
