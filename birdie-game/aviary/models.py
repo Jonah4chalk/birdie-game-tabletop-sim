@@ -61,6 +61,15 @@ class BirdCard(models.Model):
         
     class Meta:
         ordering = ['name']
+
+    
+class EndRoundGoal(models.Model):
+    goal = models.CharField(max_length=200)
+    round = models.PositiveIntegerField(default=1)
+    board = models.ForeignKey("Board", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.goal
     
 class Board(models.Model):
     forest_nectar = models.PositiveIntegerField(default=0)
@@ -81,6 +90,7 @@ class Board(models.Model):
     wetland_3 = models.ForeignKey(BirdCard, related_name="Wetland3", on_delete=models.SET_NULL, null=True, blank=True)
     wetland_4 = models.ForeignKey(BirdCard, related_name="Wetland4", on_delete=models.SET_NULL, null=True, blank=True)
     wetland_5 = models.ForeignKey(BirdCard, related_name="Wetland5", on_delete=models.SET_NULL, null=True, blank=True)
+    # end_of_round_1_goal = models.ForeignKey(EndRoundGoal, related_name="EndRoundGoal1", on_delete=models.SET_NULL, null=True, blank=True)
 
 class Food(models.Model):
     id = models.AutoField(primary_key=True)
@@ -102,11 +112,3 @@ class FoodJunction(models.Model):
     
     class Meta:
         ordering = ['card__name']
-    
-class EndRoundGoal(models.Model):
-    goal = models.CharField(max_length=200)
-    round = models.PositiveIntegerField(default=1)
-    board = models.ForeignKey(Board, on_delete=models.SET_NULL, null=True, blank=True)
-
-    def __str__(self):
-        return self.goal
