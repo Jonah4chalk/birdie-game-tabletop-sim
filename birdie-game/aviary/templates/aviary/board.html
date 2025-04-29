@@ -7,7 +7,7 @@
 <div class="navbar">
     <a href="" class="button" id="bonus">Bonus Cards</a>
     <a href="{% url 'bird_add' board.pk %}" class="button" id="edit">Edit Board</a>
-    <a href="" class="button" id="round-goals">End of Round Goals</a>
+    <a href="{% url 'end_of_round_goals' board.pk %}" class="button" id="round-goals">End of Round Goals</a>
 </div>
 <div class="board">
     <div class="nectar">{{ board.forest_nectar }}</div>

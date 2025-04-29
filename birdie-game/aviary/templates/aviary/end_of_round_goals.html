@@ -6,31 +6,31 @@
 <div class="navbar">
     <a href="" class="button" id="bonus">Bonus Cards</a>
     <a href="" class="button" id="edit">Edit Goals</a>
-    <a href="{% url 'board' board_pk %}" class="button" id="board">Board</a>
+    <a href="{% url 'board' board.pk %}" class="button" id="board">Board</a>
 </div>
 <div class="body">
     <div class="round">
         <h1>Round 1</h1>
-        {% if round_1 %}
-            <h3>{{ round_1.goal }}</h3>
+        {% if board.end_of_round_1_goal %}
+            <h3>{{ board.end_of_round_1_goal.goal }}</h3>
         {% endif %}
     </div>
     <div class="round">
         <h1>Round 2</h1>
-        {% if round_2 %}
-            <h3>{{ round_2.goal }}</h3>
+        {% if board.end_of_round_2_goal %}
+            <h3>{{ board.end_of_round_2_goal.goal }}</h3>
         {% endif %}
     </div> 
     <div class="round">
         <h1>Round 3</h1>
-        {% if round_3 %}
-            <h3>{{ round_3.goal }}</h3>
+        {% if board.end_of_round_3_goal %}
+            <h3>{{ board.end_of_round_3_goal.goal }}</h3>
         {% endif %}
     </div>
     <div class="round">
         <h1>Round 4</h1>
-        {% if round_4 %}
-            <h3>{{ round_4.goal }}</h3>
+        {% if board.end_of_round_4_goal %}
+            <h3>{{ board.end_of_round_4_goal.goal }}</h3>
         {% endif %}
     </div>
 </div>

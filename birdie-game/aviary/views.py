@@ -70,33 +70,5 @@ def create_board(request):
     return redirect('board', pk=new_board.pk)
 
 def end_of_round_goals(request, pk):
-    try:
-        board = Board.objects.get(pk=pk)
-    except Board.DoesNotExist:
-        raise Http404("Board does not exist")
-    
-    end_of_round_goals = EndRoundGoal.objects.filter(board=board)
-    try:
-        round_1 = end_of_round_goals.get(round=1)
-    except EndRoundGoal.DoesNotExist:
-        round_1 = None
-    try:
-        round_2 = end_of_round_goals.get(round=2)
-    except EndRoundGoal.DoesNotExist:
-        round_2 = None
-    try:
-        round_3 = end_of_round_goals.get(round=3)
-    except EndRoundGoal.DoesNotExist:
-        round_3 = None
-    try:
-        round_4 = end_of_round_goals.get(round=4)
-    except EndRoundGoal.DoesNotExist:
-        round_4 = None
-    context = {
-        "board_pk": board.pk,
-        "round_1": round_1,
-        "round_2": round_2,
-        "round_3": round_3,
-        "round_4": round_4,
-    }
-    return render(request, "aviary/end_of_round_goals.html", context)
+    board = Board.objects.get(pk=pk)
+    return render(request, 'aviary/end_of_round_goals.html', {'board': board})

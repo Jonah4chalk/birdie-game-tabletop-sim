@@ -66,31 +66,42 @@ class BirdCard(models.Model):
 class EndRoundGoal(models.Model):
     goal = models.CharField(max_length=200)
     round = models.PositiveIntegerField(default=1)
-    board = models.ForeignKey("Board", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.goal
     
+    @classmethod
+    def create_default_goal(cls):
+        goal, created = cls.objects.get_or_create(
+            goal="No Goal",
+            round=1,
+        )
+        return goal.pk
+
+    
 class Board(models.Model):
     forest_nectar = models.PositiveIntegerField(default=0)
-    forest_1 = models.ForeignKey(BirdCard, related_name="Forest1", on_delete=models.SET_NULL, null=True, blank=True)
-    forest_2 = models.ForeignKey(BirdCard, related_name="Forest2", on_delete=models.SET_NULL, null=True, blank=True)
-    forest_3 = models.ForeignKey(BirdCard, related_name="Forest3", on_delete=models.SET_NULL, null=True, blank=True)
-    forest_4 = models.ForeignKey(BirdCard, related_name="Forest4", on_delete=models.SET_NULL, null=True, blank=True)
-    forest_5 = models.ForeignKey(BirdCard, related_name="Forest5", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_1 = models.ForeignKey("BirdCard", related_name="Forest1", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_2 = models.ForeignKey("BirdCard", related_name="Forest2", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_3 = models.ForeignKey("BirdCard", related_name="Forest3", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_4 = models.ForeignKey("BirdCard", related_name="Forest4", on_delete=models.SET_NULL, null=True, blank=True)
+    forest_5 = models.ForeignKey("BirdCard", related_name="Forest5", on_delete=models.SET_NULL, null=True, blank=True)
     grassland_nectar = models.PositiveIntegerField(default=0)
-    grassland_1 = models.ForeignKey(BirdCard, related_name="Grassland1", on_delete=models.SET_NULL, null=True, blank=True)
-    grassland_2 = models.ForeignKey(BirdCard, related_name="Grassland2", on_delete=models.SET_NULL, null=True, blank=True)
-    grassland_3 = models.ForeignKey(BirdCard, related_name="Grassland3", on_delete=models.SET_NULL, null=True, blank=True)
-    grassland_4 = models.ForeignKey(BirdCard, related_name="Grassland4", on_delete=models.SET_NULL, null=True, blank=True)
-    grassland_5 = models.ForeignKey(BirdCard, related_name="Grassland5", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_1 = models.ForeignKey("BirdCard", related_name="Grassland1", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_2 = models.ForeignKey("BirdCard", related_name="Grassland2", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_3 = models.ForeignKey("BirdCard", related_name="Grassland3", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_4 = models.ForeignKey("BirdCard", related_name="Grassland4", on_delete=models.SET_NULL, null=True, blank=True)
+    grassland_5 = models.ForeignKey("BirdCard", related_name="Grassland5", on_delete=models.SET_NULL, null=True, blank=True)
     wetland_nectar = models.PositiveIntegerField(default=0)
-    wetland_1 = models.ForeignKey(BirdCard, related_name="Wetland1", on_delete=models.SET_NULL, null=True, blank=True)
-    wetland_2 = models.ForeignKey(BirdCard, related_name="Wetland2", on_delete=models.SET_NULL, null=True, blank=True)
-    wetland_3 = models.ForeignKey(BirdCard, related_name="Wetland3", on_delete=models.SET_NULL, null=True, blank=True)
-    wetland_4 = models.ForeignKey(BirdCard, related_name="Wetland4", on_delete=models.SET_NULL, null=True, blank=True)
-    wetland_5 = models.ForeignKey(BirdCard, related_name="Wetland5", on_delete=models.SET_NULL, null=True, blank=True)
-    # end_of_round_1_goal = models.ForeignKey(EndRoundGoal, related_name="EndRoundGoal1", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_1 = models.ForeignKey("BirdCard", related_name="Wetland1", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_2 = models.ForeignKey("BirdCard", related_name="Wetland2", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_3 = models.ForeignKey("BirdCard", related_name="Wetland3", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_4 = models.ForeignKey("BirdCard", related_name="Wetland4", on_delete=models.SET_NULL, null=True, blank=True)
+    wetland_5 = models.ForeignKey("BirdCard", related_name="Wetland5", on_delete=models.SET_NULL, null=True, blank=True)
+    end_of_round_1_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal1", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal)
+    end_of_round_2_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal2", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal)
+    end_of_round_3_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal3", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal)
+    end_of_round_4_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal4", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal)
 
 class Food(models.Model):
     id = models.AutoField(primary_key=True)
@@ -100,7 +111,7 @@ class Food(models.Model):
         return self.food_name
 
 class FoodJunction(models.Model):
-    card = models.ForeignKey(BirdCard, on_delete=models.CASCADE)
+    card = models.ForeignKey("BirdCard", on_delete=models.CASCADE)
     food = models.ManyToManyField(Food)
 
     def __str__(self):
