@@ -333,7 +333,7 @@ class BonusCard(models.Model):
         ('Rodentologist', 'Birds that eat rats'), # 2pts per bird
         ('Viticulturalist', 'Birds that eat cherries'), # 2-3: 3pts, 4+: 7pts 
         ('Anatomist', 'Birds with body parts in their names'), # 2-3: 3pts, 4+: 7pts
-        ('Cartopgrapher', 'Birds with geographic terms in their names'), # 2-3: 3pts, 4+: 7pts
+        ('Cartographer', 'Birds with geographic terms in their names'), # 2-3: 3pts, 4+: 7pts
         ('Historian', 'Birds named after a person'), # 2pts per bird
         ('Photographer', 'Birds with a color in their name'), # 4-5: 3, 6+: 6pts
         ('Breeding Manager', 'Birds that have at least 4 eggs'), # 1pt per bird
@@ -431,19 +431,34 @@ class BonusCard(models.Model):
             elif count >= 2:
                 score += 3
         elif self.bonus == 'Anatomist':
-            # placeholder
-            score = 0
-        elif self.bonus == 'Cartopgrapher':
-            # placeholder
-            score = 0
+            for bird in board.get_all_birds():
+                if 'back' in bird.name.lower() or 'beak' in bird.name.lower() or 'belly' in bird.name.lower() or 'bill' in bird.name.lower() or 'breast' in bird.name.lower() or 'cap' in bird.name.lower() or 'chin' in bird.name.lower() or 'collar' in bird.name.lower() or 'crest' in bird.name.lower() or 'crown' in bird.name.lower() or 'eye' in bird.name.lower() or 'face' in bird.name.lower() or 'head' in bird.name.lower() or 'leg' in bird.name.lower() or 'neck' in bird.name.lower() or 'rump' in bird.name.lower() or 'shoulder' in bird.name.lower() or 'throat' in bird.name.lower() or 'toe' in bird.name.lower() or 'wing' in bird.name.lower():
+                    count += 1
+            if count >= 4:
+                score += 7
+            elif count >= 2:
+                score += 3
+        elif self.bonus == 'Cartographer':
+            for bird in board.get_all_birds():
+                if 'american' in bird.name.lower() or 'atlantic' in bird.name.lower() or 'baltimore' in bird.name.lower() or 'california' in bird.name.lower() or 'canada' in bird.name.lower() or 'carolina' in bird.name.lower() or 'chihuahua' in bird.name.lower() or 'eastern' in bird.name.lower() or 'inca' in bird.name.lower() or 'kentucky' in bird.name.lower() or 'mississippi' in bird.name.lower() or 'mountain' in bird.name.lower() or 'northern' in bird.name.lower() or 'sandhill' in bird.name.lower() or 'savannah' in bird.name.lower() or 'western' in bird.name.lower() or 'eurasian' in bird.name.lower() or 'european' in bird.name.lower() or 'corsican' in bird.name.lower() or 'moor' in bird.name.lower() or 'prairie' in bird.name.lower():
+                    count += 1
+            if count >= 4:
+                score += 7
+            elif count >= 2:
+                score += 3
         elif self.bonus == 'Historian':
             for bird in board.get_all_birds():
                 if '\'s' in bird.name:
                     count += 1
             score += count * 2
         elif self.bonus == 'Photographer':
-            # placeholder
-            score = 0
+            for bird in board.get_all_birds():
+                if 'ash' in bird.name.lower() or 'black' in bird.name.lower() or 'blue' in bird.name.lower() or 'brown' in bird.name.lower() or 'bronze' in bird.name.lower() or 'cerulean' in bird.name.lower() or 'chestnut' in bird.name.lower() or 'ferruginous' in bird.name.lower() or 'gold' in bird.name.lower() or 'gray' in bird.name.lower() or 'green' in bird.name.lower() or 'indigo' in bird.name.lower() or 'lazuli' in bird.name.lower() or 'purple' in bird.name.lower() or 'red' in bird.name.lower() or 'rose' in bird.name.lower() or 'roseate' in bird.name.lower() or 'ruby' in bird.name.lower() or 'ruddy' in bird.name.lower() or 'rufous' in bird.name.lower() or 'snowy' in bird.name.lower() or 'white' in bird.name.lower() or 'yellow' in bird.name.lower():
+                    count += 1
+            if count >= 6:
+                score += 6
+            elif count >= 4:
+                score += 3
         elif self.bonus == 'Breeding Manager':
             for bird in board.get_all_birds():
                 if bird.eggs >= 4:
