@@ -57,51 +57,52 @@ class BirdCard(models.Model):
     
     def clean(self):
         if self.eggs > self.nest_size:
-            raise ValidationError("This bird's nest cannot fit all of these eggs!")
+            self.eggs = self.nest_size
         
     class Meta:
         ordering = ['name']
 
     
 class EndRoundGoal(models.Model):
-    GOALS = (
-        ('No Goal', 'No Goal'),
-        ('Eggs in Forest', 'Eggs in Forest'),
-        ('Eggs in Grassland', 'Eggs in Grassland'),
-        ('Eggs in Wetland', 'Eggs in Wetland'),
-        ('Birds in Forest', 'Birds in Forest'),
-        ('Birds in Grassland', 'Birds in Grassland'),
-        ('Birds in Wetland', 'Birds in Wetland'),
-        ('Bird Food Cost', 'Food Cost of Played Birds'),
-        ('Worms in Food Cost', 'Worms in Food Cost'),
-        ('Cherries and Wheat in Food Cost', 'Cherries and Wheat in Food Cost'),
-        ('Fish and Rats in Food Cost', 'Fish and Rats in Food Cost'),
-        ('Birds with Tucked Cards', 'Birds with Tucked Cards'),
-        ('Brown Birds', 'Brown Birds'),
-        ('White Birds', 'White or No Power Birds'),
-        ('Eggs in Cavity', 'Eggs in Cavity'),
-        ('Eggs in Bowl', 'Eggs in Bowl'),
-        ('Eggs in Stick', 'Eggs in Stick'),
-        ('Eggs in Ground', 'Eggs in Ground'),
-        ('Cavity Birds with Eggs', 'Cavity Birds with Eggs'),
-        ('Bowl Birds with Eggs', 'Bowl Birds with Eggs'),
-        ('Stick Birds with Eggs', 'Stick Birds with Eggs'),
-        ('Ground Birds with Eggs', 'Ground Birds with Eggs'),
-        ('Birds with No Eggs', 'Birds with No Eggs'),
-        ('Birds worth <4', 'Birds worth <4 points'),
-        ('Birds worth >4', 'Birds worth >4 points'),
-        ('Food in Personal Supply', 'Food in Personal Supply'),
-        ('Bird Cards in Hand', 'Bird Cards in Hand'),
-        ('Sets of Eggs', 'Sets of Eggs'),
-        ('Filled Columns', 'Filled Columns'),
-        ('Birds in a Row', 'Birds in a Row'),
-        ('Number of Played Birds', 'Number of Played Birds'),
-        ('Beaks Pointing Right', 'Beaks Pointing Right'),
-        ('Beaks Pointing Left', 'Beaks Pointing Left'),
-        ('Cubes on \"Play a Bird\"', 'Cubes on \"Play a Bird\"'),
-    )
+    GOALS = {
+        'NG': 'No Goal',
+        'EF': 'Eggs in Forest',
+        'EG': 'Eggs in Grassland',
+        'EW': 'Eggs in Wetland',
+        'BF': 'Birds in Forest',
+        'BG': 'Birds in Grassland',
+        'BW': 'Birds in Wetland',
+        'BFC': 'Food Cost of Played Birds',
+        'WFC': 'Worms in Food Cost',
+        'CWFC': 'Cherries and Wheat in Food Cost',
+        'FRFC': 'Fish and Rats in Food Cost',
+        'BTC': 'Birds with Tucked Cards',
+        'BRB': 'Birds with Brown Power',
+        'WHB': 'Birds with White or No Power',
+        'ECVTY': 'Eggs in Cavity Nests',
+        'EBWL': 'Eggs in Bowl Nests',
+        'ESTK': 'Eggs in Stick Nests',
+        'EGRD': 'Eggs in Ground Nests',
+        'CVTYBE': 'Cavity Nest Birds with Eggs',
+        'BWLBE': 'Bowl Nest Birds with Eggs',
+        'STKBE': 'Stick Nest Birds with Eggs',
+        'GRDBE': 'Ground Nest Birds with Eggs',
+        'BNE': 'Birds with No Eggs',
+        'BGTF': 'Birds worth <4 points',
+        'BLTF': 'Birds worth >4 points',
+        'FIPS': 'Food in Personal Supply',
+        'BIH': 'Bird Cards in Hand',
+        'SE': 'Sets of Eggs',
+        'FC': 'Filled Columns',
+        'BIAR': 'Birds in one Row',
+        'PLAYB': 'Number of Played Birds',
+        'BPR': 'Beaks Pointing Right',
+        'BPL': 'Beaks Pointing Left',
+        'CPLAYB': 'Cubes on \"Play a Bird\"',
+    }
     id = models.AutoField(primary_key=True)
     goal = models.CharField(max_length=50, choices=GOALS, default='No Goal')
+    score = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.goal
@@ -111,21 +112,21 @@ class EndRoundGoal(models.Model):
         if self.goal == 'No Goal':
             return 0
         elif self.goal == 'Eggs in Forest':
-            for bird in board.forest_1.all() + board.forest_2.all() + board.forest_3.all() + board.forest_4.all() + board.forest_5.all():
+            for bird in board.get_forest_birds():
                 score += bird.eggs
         elif self.goal == 'Eggs in Grassland':
-            for bird in board.grassland_1.all() + board.grassland_2.all() + board.grassland_3.all() + board.grassland_4.all() + board.grassland_5.all():
+            for bird in board.get_grassland_birds():
                 score += bird.eggs
         elif self.goal == 'Eggs in Wetland':
-            for bird in board.wetland_1.all() + board.wetland_2.all() + board.wetland_3.all() + board.wetland_4.all() + board.wetland_5.all():
+            for bird in board.get_wetland_birds():
                 score += bird.eggs
         elif self.goal == 'Birds in Forest':
-            return len(board.forest_1.all() + board.forest_2.all() + board.forest_3.all() + board.forest_4.all() + board.forest_5.all())
+            return len(board.get_forest_birds())
         elif self.goal == 'Birds in Grassland':
-            return len(board.grassland_1.all() + board.grassland_2.all() + board.grassland_3.all() + board.grassland_4.all() + board.grassland_5.all())
+            return len(board.get_grassland_birds())
         elif self.goal == 'Birds in Wetland':
-            return len(board.wetland_1.all() + board.wetland_2.all() + board.wetland_3.all() + board.wetland_4.all() + board.wetland_5.all())
-        elif self.goal == 'Bird Food Cost':
+            return len(board.get_wetland_birds())
+        elif self.goal == 'Food Cost of Played Birds':
             for bird in board.get_all_birds():
                 score += len(FoodJunction.objects.filter(card=bird))
         elif self.goal == 'Worms in Food Cost':
@@ -150,43 +151,43 @@ class EndRoundGoal(models.Model):
             for bird in board.get_all_birds():
                 if bird.tucked_cards > 0:
                     score += 1
-        elif self.goal == 'Brown Birds':
+        elif self.goal == 'Birds with Brown Power':
             for bird in board.get_all_birds():
                 if bird.ability_type == 'b':
                     score += 1
-        elif self.goal == 'White Birds':
+        elif self.goal == 'Birds with White or No Power':
             for bird in board.get_all_birds():
                 if bird.ability_type == 'w' or bird.ability_type == 'n':
                     score += 1
-        elif self.goal == 'Eggs in Cavity':
+        elif self.goal == 'Eggs in Cavity Nests':
             for bird in board.get_all_birds():
                 if bird.nest_type == 'c' or bird.nest_type == 'a':
                     score += bird.eggs
-        elif self.goal == 'Eggs in Bowl':
+        elif self.goal == 'Eggs in Bowl Nests':
             for bird in board.get_all_birds():
                 if bird.nest_type == 'b' or bird.nest_type == 'a':
                     score += bird.eggs
-        elif self.goal == 'Eggs in Stick':
+        elif self.goal == 'Eggs in Stick Nests':
             for bird in board.get_all_birds():
                 if bird.nest_type == 's' or bird.nest_type == 'a':
                     score += bird.eggs
-        elif self.goal == 'Eggs in Ground':
+        elif self.goal == 'Eggs in Ground Nests':
             for bird in board.get_all_birds():
                 if bird.nest_type == 'g' or bird.nest_type == 'a':
                     score += bird.eggs
-        elif self.goal == 'Cavity Birds with Eggs':
+        elif self.goal == 'Cavity Nest Birds with Eggs':
             for bird in board.get_all_birds():
                 if (bird.nest_type == 'c' or bird.nest_type == 'a') and bird.eggs > 0:
                     score += 1
-        elif self.goal == 'Bowl Birds with Eggs':
+        elif self.goal == 'Bowl Nests Birds with Eggs':
             for bird in board.get_all_birds():
                 if (bird.nest_type == 'b' or bird.nest_type == 'a') and bird.eggs > 0:
                     score += 1
-        elif self.goal == 'Stick Birds with Eggs':
+        elif self.goal == 'Stick Nest Birds with Eggs':
             for bird in board.get_all_birds():
                 if (bird.nest_type == 's' or bird.nest_type == 'a') and bird.eggs > 0:
                     score += 1
-        elif self.goal == 'Ground Birds with Eggs':
+        elif self.goal == 'Ground Nest Birds with Eggs':
             for bird in board.get_all_birds():
                 if (bird.nest_type == 'g' or bird.nest_type == 'a') and bird.eggs > 0:
                     score += 1
@@ -194,11 +195,11 @@ class EndRoundGoal(models.Model):
             for bird in board.get_all_birds():
                 if bird.eggs == 0:
                     score += 1
-        elif self.goal == 'Birds worth <4':
+        elif self.goal == 'Birds worth <4 points':
             for bird in board.get_all_birds():
                 if bird.feathers < 4:
                     score += 1
-        elif self.goal == 'Birds worth >4':
+        elif self.goal == 'Birds worth >4 points':
             for bird in board.get_all_birds():
                 if bird.feathers > 4:
                     score += 1
@@ -222,7 +223,7 @@ class EndRoundGoal(models.Model):
             grassland_birds = board.get_grassland_birds()
             wetland_birds = board.get_wetland_birds()
             score = min(len(forest_birds), len(grassland_birds), len(wetland_birds))
-        elif self.goal == 'Birds in a Row':
+        elif self.goal == 'Birds in one Row':
             forest_birds = board.get_forest_birds()
             grassland_birds = board.get_grassland_birds()
             wetland_birds = board.get_wetland_birds()
@@ -241,13 +242,13 @@ class EndRoundGoal(models.Model):
             # placeholder
             score = 0
         else:
-            raise ValidationError("Invalid goal")      
+            raise ValidationError("Invalid goal")
         return score
     
     @classmethod
     def create_default_goal(cls):
-        goal = cls.objects.create()
-        return goal.pk
+        goal = cls.objects.create(goal='No Goal')
+        return goal.id
 
     
 class Board(models.Model):
@@ -269,10 +270,10 @@ class Board(models.Model):
     wetland_3 = models.ForeignKey("BirdCard", related_name="Wetland3", on_delete=models.SET_NULL, null=True, blank=True)
     wetland_4 = models.ForeignKey("BirdCard", related_name="Wetland4", on_delete=models.SET_NULL, null=True, blank=True)
     wetland_5 = models.ForeignKey("BirdCard", related_name="Wetland5", on_delete=models.SET_NULL, null=True, blank=True)
-    end_of_round_1_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal1", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True), 
-    end_of_round_2_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal2", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True), 
-    end_of_round_3_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal3", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True), 
-    end_of_round_4_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal4", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True), 
+    end_of_round_1_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal1", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
+    end_of_round_2_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal2", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
+    end_of_round_3_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal3", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
+    end_of_round_4_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal4", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
 
     def __str__(self):
         return f"Board {self.pk}"
@@ -321,37 +322,38 @@ class FoodJunction(models.Model):
         ordering = ['card__name']
 
 class BonusCard(models.Model):
-    BONUSES = (
-        ('No Bonus', 'No Bonus'),
-        ('Forester', 'Birds that can only live in the forest'), #3-4: 4pts, 5: 8pts
-        ('Prairie Manager', 'Birds that can only live in the grassland'), #2-3: 3pts, 4+: 8pts
-        ('Wetland Scientist', 'Birds that can only live in the wetland'), #3-4: 3pts, 5: 7pts
-        ('Bird Feeder', 'Birds that eat wheat'), # 5-7: 3pts, 8+: 7pts
-        ('Food Web Expert', 'Birds that can only eat worms'), # 2pts per bird
-        ('Fishery Manager', 'Birds that eat fish'), # 2-3: 3pts, 4: 8pts
-        ('Omnivore Expert', 'Birds that eat wild'), # 2pts per bird
-        ('Rodentologist', 'Birds that eat rats'), # 2pts per bird
-        ('Viticulturalist', 'Birds that eat cherries'), # 2-3: 3pts, 4+: 7pts 
-        ('Anatomist', 'Birds with body parts in their names'), # 2-3: 3pts, 4+: 7pts
-        ('Cartographer', 'Birds with geographic terms in their names'), # 2-3: 3pts, 4+: 7pts
-        ('Historian', 'Birds named after a person'), # 2pts per bird
-        ('Photographer', 'Birds with a color in their name'), # 4-5: 3, 6+: 6pts
-        ('Breeding Manager', 'Birds that have at least 4 eggs'), # 1pt per bird
-        ('Oologist', 'Birds that have at least 1 egg'), # 7-8: 3pts, 9+: 6pts
-        ('Enclosure Builder', 'Birds with ground nests'), # 4-5: 4pts, 6+: 7pts
-        ('Nest Box Builder', 'Birds with cavity nests'), # 4-5: 4pts, 6+: 7pts
-        ('Platform Builder', 'Birds with stick nests'), # 4-5: 4pts, 6+: 7pts
-        ('Wildlife Gardener', 'Birds with bowl nests'), # 4-5: 4pts, 6+: 7pts
-        ('Backyard Birder', 'Birds worth less than 4 points'), # 5-6: 3pts, 7+: 6pts
-        ('Passerine Specialist', 'Birds with wingspan 30cm or less'), # 4-5: 3pts, 6+: 6pts
-        ('Large Bird Specialist', 'Birds with wingspan more than 65cm'), # 4-5: 3pts, 6+: 6pts
-        ('Bird Counter', 'Birds with a tucking power'), # 2pts per bird
-        ('Falconer', 'Birds with a death power'), # 2pts per bird
-        ('Ecologist', 'Birds in your habitat with the fewest birds'), # 2pts per bird
-        ('Visionary Leader', 'Bird cards in hand at the end of the game'), # 5-7: 4pts, 8+: 7pts
-    )
+    BONUSES = {
+        'No Bonus': 'No Bonus',
+        'Forester': 'Birds that can only live in the forest', #3-4: 4pts, 5: 8pts
+        'Prairie Manager': 'Birds that can only live in the grassland', #2-3: 3pts, 4+: 8pts
+        'Wetland Scientist': 'Birds that can only live in the wetland', #3-4: 3pts, 5: 7pts
+        'Bird Feeder': 'Birds that eat wheat', # 5-7: 3pts, 8+: 7pts
+        'Food Web Expert': 'Birds that can only eat worms', # 2pts per bird
+        'Fishery Manager': 'Birds that eat fish', # 2-3: 3pts, 4: 8pts
+        'Omnivore Expert': 'Birds that eat wild', # 2pts per bird
+        'Rodentologist': 'Birds that eat rats', # 2pts per bird
+        'Viticulturalist': 'Birds that eat cherries', # 2-3: 3pts, 4+: 7pts 
+        'Anatomist': 'Birds with body parts in their names', # 2-3: 3pts, 4+: 7pts
+        'Cartographer': 'Birds with geographic terms in their names', # 2-3: 3pts, 4+: 7pts
+        'Historian': 'Birds named after a person', # 2pts per bird
+        'Photographer': 'Birds with a color in their name', # 4-5: 3, 6+: 6pts
+        'Breeding Manager': 'Birds that have at least 4 eggs', # 1pt per bird
+        'Oologist': 'Birds that have at least 1 egg', # 7-8: 3pts, 9+: 6pts
+        'Enclosure Builder': 'Birds with ground nests', # 4-5: 4pts, 6+: 7pts
+        'Nest Box Builder': 'Birds with cavity nests', # 4-5: 4pts, 6+: 7pts
+        'Platform Builder': 'Birds with stick nests', # 4-5: 4pts, 6+: 7pts
+        'Wildlife Gardener': 'Birds with bowl nests', # 4-5: 4pts, 6+: 7pts
+        'Backyard Birder': 'Birds worth less than 4 points', # 5-6: 3pts, 7+: 6pts
+        'Passerine Specialist': 'Birds with wingspan 30cm or less', # 4-5: 3pts, 6+: 6pts
+        'Large Bird Specialist': 'Birds with wingspan more than 65cm', # 4-5: 3pts, 6+: 6pts
+        'Bird Counter': 'Birds with a tucking power', # 2pts per bird
+        'Falconer': 'Birds with a death power', # 2pts per bird
+        'Ecologist': 'Birds in your habitat with the fewest birds', # 2pts per bird
+        'Visionary Leader': 'Bird cards in hand at the end of the game', # 5-7: 4pts, 8+: 7pts
+    }
     id = models.AutoField(primary_key=True)
     bonus = models.CharField(max_length=50, choices=BONUSES, default='No Bonus')
+    score = models.PositiveIntegerField(default=0)
     
     def calculate_score(self, board):
         score = 0
@@ -530,7 +532,7 @@ class BonusCard(models.Model):
                 score += 3
         elif self.bonus == 'Bird Counter':
             for bird in board.get_all_birds():
-                if bird.tucked_cards > 0:
+                if "[Tucky]" in bird.ability_desc:
                     count += 1
             score += count * 2
         elif self.bonus == 'Falconer':

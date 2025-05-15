@@ -1,7 +1,8 @@
+import json
 from django.shortcuts import redirect, render
 from django.template import loader
 from .models import BirdCard, Board, EndRoundGoal
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.views.generic.edit import UpdateView, FormView
 from django.urls import reverse_lazy
 from django import forms
@@ -71,4 +72,38 @@ def create_board(request):
 
 def end_of_round_goals(request, pk):
     board = Board.objects.get(pk=pk)
-    return render(request, 'aviary/end_of_round_goals.html', {'board': board})
+    return render(request, 'aviary/end_of_round_goals.html', {'board': board, 'EndRoundGoal': EndRoundGoal})
+
+def update_end_of_round_goals(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        rounds = data.get('rounds') # array of rounds to be edited
+        goals = data.get('goals') # must be length 4 containing new goals for rounds 1-4
+        board_id = data.get('board_id')
+
+        try:
+            board = Board.objects.get(pk=board_id)
+
+            if 'round-1' in rounds:
+                board.end_of_round_1_goal.goal = EndRoundGoal.GOALS[goals[0]]
+                board.end_of_round_1_goal.score = board.end_of_round_1_goal.calculate_score(board)
+                board.end_of_round_1_goal.save()
+            elif 'round-2' in rounds:
+                board.end_of_round_2_goal.goal = EndRoundGoal.GOALS[goals[1]]
+                board.end_of_round_2_goal.score = board.end_of_round_2_goal.calculate_score(board)
+                board.end_of_round_2_goal.save()
+            elif 'round-3' in rounds:
+                board.end_of_round_3_goal.goal = EndRoundGoal.GOALS[goals[2]]
+                board.end_of_round_3_goal.score = board.end_of_round_3_goal.calculate_score(board)
+                board.end_of_round_3_goal.save()
+            elif 'round-4' in rounds:
+                board.end_of_round_4_goal.goal = EndRoundGoal.GOALS[goals[3]]
+                board.end_of_round_4_goal.score = board.end_of_round_4_goal.calculate_score(board)
+                board.end_of_round_4_goal.save()
+
+            board.save()
+            return JsonResponse({'status': 'success'})
+
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+            

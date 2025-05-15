@@ -1,5 +1,6 @@
 {% load static %}
-
+{% csrf_token %}
+{{ board.pk|json_script:"board"}}
 <link rel="stylesheet" href="{% static 'aviary/css/end_of_round_goals.css' %}">
 <link rel="stylesheet" href="{% static 'aviary/css/button.css' %}">
 
@@ -10,27 +11,119 @@
 </div>
 <div class="body">
     <div class="round">
-        <h1>Round 1</h1>
+        <label for="round-1">Round 1</label>
+        <select id="round-1" name="round-1">
+            {% for goal in EndRoundGoal.GOALS.items %}
+                {% if board.end_of_round_1_goal and board.end_of_round_1_goal.goal == goal.1 %}
+                    <option value="{{ goal.0 }}" selected>
+                {% else %}
+                    <option value="{{ goal.0 }}">
+                {% endif %}
+                    {{ goal.1 }}
+                </option>
+            {% endfor %}
+        </select>
         {% if board.end_of_round_1_goal %}
-            <h3>{{ board.end_of_round_1_goal.goal }}</h3>
+            <h3>{{ board.end_of_round_1_goal.get_goal_display }}</h3>
         {% endif %}
+        <h3>Score: {{ board.end_of_round_1_goal.score }}</h3>
     </div>
     <div class="round">
-        <h1>Round 2</h1>
+        <label for="round-2">Round 2</label>
+        <select id="round-2" name="round-2">
+            {% for goal in EndRoundGoal.GOALS.items %}
+                <option value="{{ goal.0 }}" {% if board.end_of_round_2_goal and board.end_of_round_2_goal.goal == goal %}selected{% endif %}>
+                    {{ goal.1 }}
+                </option>
+            {% endfor %}
+        </select>
         {% if board.end_of_round_2_goal %}
-            <h3>{{ board.end_of_round_2_goal.goal }}</h3>
+            <h3>{{ board.end_of_round_2_goal.get_goal_display }}</h3>
         {% endif %}
+        <h3>Score: {{ board.end_of_round_2_goal.score }}</h3>
     </div> 
     <div class="round">
-        <h1>Round 3</h1>
+        <label for="round-3">Round 3</label>
+        <select id="round-3" name="round-3">
+            {% for goal in EndRoundGoal.GOALS.items %}
+                <option value="{{ goal.0 }}" {% if board.end_of_round_3_goal and board.end_of_round_3_goal.goal == goal %}selected{% endif %}>
+                    {{ goal.1 }}
+                </option>
+            {% endfor %}
+        </select>
         {% if board.end_of_round_3_goal %}
-            <h3>{{ board.end_of_round_3_goal.goal }}</h3>
+            <h3>{{ board.end_of_round_3_goal.get_goal_display }}</h3>
         {% endif %}
+        <h3>Score: {{ board.end_of_round_3_goal.score }}</h3>
     </div>
     <div class="round">
-        <h1>Round 4</h1>
+        <label for="round-4">Round 4</label>
+        <select id="round-4" name="round-4">
+            {% for goal in EndRoundGoal.GOALS.items %}
+                <option value="{{ goal.0 }}" {% if board.end_of_round_4_goal and board.end_of_round_4_goal.goal == goal %}selected{% endif %}>
+                    {{ goal.1 }}
+                </option>
+            {% endfor %}
+        </select>
         {% if board.end_of_round_4_goal %}
-            <h3>{{ board.end_of_round_4_goal.goal }}</h3>
+            <h3>{{ board.end_of_round_4_goal.get_goal_display }}</h3>
         {% endif %}
+        <h3>Score: {{ board.end_of_round_4_goal.score }}</h3>
     </div>
+
+    <script>
+        const board_id = JSON.parse(document.getElementById('board').textContent);
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('select').forEach(function (dropdown) {
+                dropdown.addEventListener('change', function () {
+                    const rounds = [this.name];
+                    const goals = [];
+                    if (this.name === "round-1") {
+                        goals.push(this.value);
+                    } else {
+                        goals.push(null);
+                    }
+                    if (this.name === "round-2") {
+                        goals.push(this.value);
+                    } else {
+                        goals.push(null);
+                    }
+                    if (this.name === "round-3") {
+                        goals.push(this.value);
+                    } else {
+                        goals.push(null);
+                    }
+                    if (this.name === "round-4") {
+                        goals.push(this.value);
+                    } else {
+                        goals.push(null);
+                    }
+                    fetch("{% url 'update_end_of_round_goals' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "X-CSRFToken": "{{ csrf_token }}",
+                        },
+                        body: JSON.stringify({
+                            'board_id': board_id,
+                            'rounds': rounds,
+                            'goals': goals,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            console.log('Goal updated successfully');
+                        } else {
+                            console.error('Error updating goal:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert("Error: " + error);
+                    });
+                });
+            });
+        });
+    </script>
 </div>
