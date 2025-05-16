@@ -102,7 +102,21 @@ def update_end_of_round_goals(request):
                 board.end_of_round_4_goal.save()
 
             board.save()
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({
+                'status': 'success',
+                'goals': [
+                    board.end_of_round_1_goal.goal,
+                    board.end_of_round_2_goal.goal, 
+                    board.end_of_round_3_goal.goal,
+                    board.end_of_round_4_goal.goal
+                ],
+                'scores': [
+                    board.end_of_round_1_goal.score,
+                    board.end_of_round_2_goal.score,
+                    board.end_of_round_3_goal.score,
+                    board.end_of_round_4_goal.score
+                ]
+            })
 
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
