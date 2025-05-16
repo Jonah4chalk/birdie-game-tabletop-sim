@@ -72,6 +72,15 @@ def create_board(request):
 
 def end_of_round_goals(request, pk):
     board = Board.objects.get(pk=pk)
+    # update scores of goals before rendering
+    for goal in [
+        board.end_of_round_1_goal,
+        board.end_of_round_2_goal,
+        board.end_of_round_3_goal,
+        board.end_of_round_4_goal
+    ]:
+        goal.score = goal.calculate_score(board)
+        goal.save()
     return render(request, 'aviary/end_of_round_goals.html', {'board': board, 'EndRoundGoal': EndRoundGoal})
 
 def update_end_of_round_goals(request):
