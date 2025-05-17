@@ -130,3 +130,12 @@ def update_end_of_round_goals(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
             
+def bonus_cards(request, pk):
+    board = Board.objects.get(pk=pk)
+
+    # update scores of current bonus cards before rendering
+    for card in board.bonus_cards.all():
+        card.score = card.calculate_score(board)
+        card.save()
+    # render webpage
+    return render(request, 'aviary/bonus_cards.html', {'board': board})

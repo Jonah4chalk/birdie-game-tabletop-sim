@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'aviary/css/bonus_cards.css' %}">
+    <link rel="stylesheet" href="{% static 'aviary/css/button.css' %}">
+    <script>
+        /*to prevent Firefox FOUC, this must be here*/
+        let FF_FOUC_FIX;
+  </script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'board' board.pk %}" class="button" id="board">Board</a>
+        <a href="" class="button" id="edit">Edit Bonuses</a>
+        <a href="{% url 'end_of_round_goals' board.pk %}" class="button" id="round-goals">End of Round Goals</a>
+    </div>
+    <div class="body">
+        {% if board.bonus_cards.all %}
+            <div class="bonus-cards">
+                {% for card in board.bonus_cards.all %}
+                    <div class="bonus-card">
+                        <label for="bonus-card-{{ card.pk }}">{{ card.get_bonus_display }}</label>
+                        <select id="bonus-card-{{ card.pk }}" name="bonus-card-{{ card.pk }}">
+                            {% for bonus in BonusCard.BONUS_CARDS.items %}
+                                <option value="{{ bonus.0 }}" {% if card.bonus == bonus.0 %}selected{% endif %}>
+                                    {{ bonus.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <strong>Score: {{ card.score }}</strong>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No bonus cards available.</p>
+        {% endif %}
+        <button id="add-bonus-card" class="button">Add Bonus Card</button>
+    </div>
+</body>

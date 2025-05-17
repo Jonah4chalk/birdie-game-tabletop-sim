@@ -1,99 +1,107 @@
+<!DOCTYPE html>
 {% load static %}
-
-<link rel="stylesheet" href="{% static 'aviary/css/birdcard.css' %}">
-{% if bird is not None %}
-  <div class="top-row">
-    <div class="habitats">
-      {% for habitat in bird.habitats.all %}
-        {% if habitat.habitat_name == "Forest" %}
-          <img src="{% static 'aviary/img/forest.jpg' %}" alt="forest"/>
-        {% elif habitat.habitat_name == "Grassland" %}
-          <img src="{% static 'aviary/img/grassland.jpg' %}" alt="grassland"/>
-        {% elif habitat.habitat_name == "Wetland" %}
-          <img src="{% static 'aviary/img/wetland.jpg' %}" alt="wetland"/>
-        {% endif %}
-      {% endfor %}
-    </div>
-    <div class="food">
-      {% for food_group in food %}
-        {% for f in food_group %}
-          {% if f == "Worm" %}
-            <img src="{% static 'aviary/img/worm.jpg' %}" alt="worm"/>
-          {% elif f == "Wheat" %}
-            <img src="{% static 'aviary/img/wheat.jpg' %}" alt="wheat"/>
-          {% elif f == "Cherry" %}
-            <img src="{% static 'aviary/img/cherry.jpg' %}" alt="cherry"/>
-          {% elif f == "Rat" %}
-            <img src="{% static 'aviary/img/rat.jpg' %}" alt="rat"/>
-          {% elif f == "Fish" %}
-            <img src="{% static 'aviary/img/fish.jpg' %}" alt="fish"/>
-          {% elif f == "Nectar" %}
-            <img src="{% static 'aviary/img/nectar.jpg' %}" alt="nectar"/>
-          {% elif f == "Wild" %}
-            <img src="{% static 'aviary/img/wild.jpg' %}" alt="wild"/>
-          {% endif %}
-          {% if not forloop.last %}
-            /
+<head>
+  <link rel="stylesheet" href="{% static 'aviary/css/birdcard.css' %}">
+  <script>
+        /*to prevent Firefox FOUC, this must be here*/
+        let FF_FOUC_FIX;
+    </script>
+</head>
+<body>
+  {% if bird is not None %}
+    <div class="top-row">
+      <div class="habitats">
+        {% for habitat in bird.habitats.all %}
+          {% if habitat.habitat_name == "Forest" %}
+            <img src="{% static 'aviary/img/forest.jpg' %}" alt="forest"/>
+          {% elif habitat.habitat_name == "Grassland" %}
+            <img src="{% static 'aviary/img/grassland.jpg' %}" alt="grassland"/>
+          {% elif habitat.habitat_name == "Wetland" %}
+            <img src="{% static 'aviary/img/wetland.jpg' %}" alt="wetland"/>
           {% endif %}
         {% endfor %}
-        {% if not forloop.last %}
-          +
+      </div>
+      <div class="food">
+        {% for food_group in food %}
+          {% for f in food_group %}
+            {% if f == "Worm" %}
+              <img src="{% static 'aviary/img/worm.jpg' %}" alt="worm"/>
+            {% elif f == "Wheat" %}
+              <img src="{% static 'aviary/img/wheat.jpg' %}" alt="wheat"/>
+            {% elif f == "Cherry" %}
+              <img src="{% static 'aviary/img/cherry.jpg' %}" alt="cherry"/>
+            {% elif f == "Rat" %}
+              <img src="{% static 'aviary/img/rat.jpg' %}" alt="rat"/>
+            {% elif f == "Fish" %}
+              <img src="{% static 'aviary/img/fish.jpg' %}" alt="fish"/>
+            {% elif f == "Nectar" %}
+              <img src="{% static 'aviary/img/nectar.jpg' %}" alt="nectar"/>
+            {% elif f == "Wild" %}
+              <img src="{% static 'aviary/img/wild.jpg' %}" alt="wild"/>
+            {% endif %}
+            {% if not forloop.last %}
+              /
+            {% endif %}
+          {% endfor %}
+          {% if not forloop.last %}
+            +
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <div class="name-row">
+      <p id="name">{{ bird.name }}</p>
+    </div>
+    <div class="image-row">
+      <div>
+      {% if bird.direction_facing == "l" %}
+        <img id="bird_facing" src="{% static 'aviary/img/left_facing.jpg' %}" alt="{{ bird.name }}"/>
+      {% elif bird.direction_facing == "r" %}
+        <img id="bird_facing" src="{% static 'aviary/img/right_facing.jpg' %}" alt="{{ bird.name }}"/>
+      {% elif bird.direction_facing == "f" %}
+        <img id="bird_facing" src="{% static 'aviary/img/forward_facing.jpg' %}" alt="{{ bird.name }}"/>
+      {% else %}
+      {% endif %}
+      </div>
+    </div>
+
+    <div class="middle-row">
+      <div class="feathers">
+        <img src="{% static 'aviary/img/feather.jpg' %}" alt="feathers"/>
+        <p>{{ bird.feathers }}</p>
+      </div>
+      <div class="nests">
+        {% if bird.nest_type == 'g' %}
+          <img src="{% static 'aviary/img/ground.jpg' %}" alt="ground nest"/>
+        {% elif bird.nest_type == 'a' %}
+          <img src="{% static 'aviary/img/star.jpg' %}" alt="star nest"/>    
+        {% elif bird.nest_type == 'b' %}
+          <img src="{% static 'aviary/img/bowl.jpg' %}" alt="bowl nest"/>
+        {% elif bird.nest_type == 'c' %}
+          <img src="{% static 'aviary/img/cavity.jpg' %}" alt="cavity nest"/>
+        {% elif bird.nest_type == 's' %}
+          <img src="{% static 'aviary/img/stick.jpg' %}" alt="stick nest"/>
         {% endif %}
-      {% endfor %}
+        {% if bird.nest_type != 'n' %}
+          <p>{{ bird.eggs }}/{{ bird.nest_size }}</p>
+        {% endif %}
+      </div>
+      <div class="wingspan">
+        <h1>&#8596;</h1>
+        <p>{{ bird.wingspan }}</p>
+      </div>
+      <div class="cached_food">
+        <img src="{% static 'aviary/img/wild.jpg' %}" width="50px" height="50px" alt="wild">
+        <p>{{ bird.cached_food }}</p>
+      </div>
+      <div class="tucked_cards">
+        <img src="{% static 'aviary/img/tucked_cards.jpg' %}" alt="tucked_cards">
+        <p>{{ bird.tucked_cards }}</p>
+      </div>
     </div>
-  </div>
-  <div class="name-row">
-    <p id="name">{{ bird.name }}</p>
-  </div>
-  <div class="image-row">
-    <div>
-    {% if bird.direction_facing == "l" %}
-      <img id="bird_facing" src="{% static 'aviary/img/left_facing.jpg' %}" alt="{{ bird.name }}"/>
-    {% elif bird.direction_facing == "r" %}
-      <img id="bird_facing" src="{% static 'aviary/img/right_facing.jpg' %}" alt="{{ bird.name }}"/>
-    {% elif bird.direction_facing == "f" %}
-      <img id="bird_facing" src="{% static 'aviary/img/forward_facing.jpg' %}" alt="{{ bird.name }}"/>
-    {% else %}
-    {% endif %}
-    </div>
-  </div>
 
-  <div class="middle-row">
-    <div class="feathers">
-      <img src="{% static 'aviary/img/feather.jpg' %}" alt="feathers"/>
-      <p>{{ bird.feathers }}</p>
+    <div id="abilities" class="ability-{{ bird.ability_type }}">
+      <p>{{ bird.ability_desc }}</p>
     </div>
-    <div class="nests">
-      {% if bird.nest_type == 'g' %}
-        <img src="{% static 'aviary/img/ground.jpg' %}" alt="ground nest"/>
-      {% elif bird.nest_type == 'a' %}
-        <img src="{% static 'aviary/img/star.jpg' %}" alt="star nest"/>    
-      {% elif bird.nest_type == 'b' %}
-        <img src="{% static 'aviary/img/bowl.jpg' %}" alt="bowl nest"/>
-      {% elif bird.nest_type == 'c' %}
-        <img src="{% static 'aviary/img/cavity.jpg' %}" alt="cavity nest"/>
-      {% elif bird.nest_type == 's' %}
-        <img src="{% static 'aviary/img/stick.jpg' %}" alt="stick nest"/>
-      {% endif %}
-      {% if bird.nest_type != 'n' %}
-        <p>{{ bird.eggs }}/{{ bird.nest_size }}</p>
-      {% endif %}
-    </div>
-    <div class="wingspan">
-      <h1>&#8596;</h1>
-      <p>{{ bird.wingspan }}</p>
-    </div>
-    <div class="cached_food">
-      <img src="{% static 'aviary/img/wild.jpg' %}" width="50px" height="50px" alt="wild">
-      <p>{{ bird.cached_food }}</p>
-    </div>
-    <div class="tucked_cards">
-      <img src="{% static 'aviary/img/tucked_cards.jpg' %}" alt="tucked_cards">
-      <p>{{ bird.tucked_cards }}</p>
-    </div>
-  </div>
-
-  <div id="abilities" class="ability-{{ bird.ability_type }}">
-    <p>{{ bird.ability_desc }}</p>
-  </div>
-{% endif %}
+  {% endif %}
+</body>

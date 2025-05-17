@@ -1,8 +1,15 @@
+<!DOCTYPE html>
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'aviary/css/index.css' %}">
 
-<head></head>
+
+<head>
+    <link rel="stylesheet" href="{% static 'aviary/css/index.css' %}">
+    <script>
+        /*to prevent Firefox FOUC, this must be here*/
+        let FF_FOUC_FIX;
+    </script>
+</head>
 <body>
     <h1>Bird Aviary Simulator</h1>
     <div class="options">

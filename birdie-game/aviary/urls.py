@@ -13,4 +13,5 @@ urlpatterns = [
     path('board/<pk>/add/', views.BirdAddView.as_view(), name='bird_add'),
     path('board/create/', views.create_board, name='create_board'),
     path('board/<pk>/goals/', views.end_of_round_goals, name='end_of_round_goals'),
+    path('board/<pk>/bonus_cards/', views.bonus_cards, name='bonus_cards'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
