@@ -1,9 +1,8 @@
 import json
-from django.shortcuts import redirect, render
-from django.template import loader
-from .models import BirdCard, Board, EndRoundGoal
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import BirdCard, Board, BonusCard, BonusCardAddForm, EndRoundGoal
 from django.http import Http404, JsonResponse
-from django.views.generic.edit import UpdateView, FormView
+from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 from django import forms
 
@@ -56,7 +55,7 @@ class BirdAddModelForm(forms.ModelForm):
 
     class Meta:
         model = Board
-        exclude = ()
+        exclude = ("end_of_round_1_goal", "end_of_round_2_goal", "end_of_round_3_goal", "end_of_round_4_goal", "bonus_cards")
     
 class BirdAddView(UpdateView):
     model = Board
@@ -138,4 +137,42 @@ def bonus_cards(request, pk):
         card.score = card.calculate_score(board)
         card.save()
     # render webpage
-    return render(request, 'aviary/bonus_cards.html', {'board': board})
+    return render(request, 'aviary/bonus_cards.html', {'board': board, 'BonusCard': BonusCard})
+
+def add_bonus_card(request, pk):
+    board = get_object_or_404(Board, pk=pk)
+    if request.method == 'POST':
+        form = BonusCardAddForm(request.POST)
+        if form.is_valid():
+            bonus_card = form.save()
+            board.bonus_cards.add(bonus_card)
+            return redirect('bonus_cards', pk=pk)
+    else:
+        form = BonusCardAddForm()
+    return render(request, 'aviary/add_bonus_card.html', {'form': form, 'board': board})
+
+def delete_bonus_card(request, board_pk, card_pk):
+    board = get_object_or_404(Board, pk=board_pk)
+    bonus_card = get_object_or_404(BonusCard, pk=card_pk)
+    board.bonus_cards.remove(bonus_card)
+    bonus_card.delete()
+    return redirect('bonus_cards', pk=board_pk)
+
+def update_bonus_card(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        board_pk = data.get('board_pk')
+        card_pk = data.get('card_pk')
+        board = get_object_or_404(Board, id=board_pk)
+        bonus_card = get_object_or_404(BonusCard, id=card_pk)
+        bonus_card.bonus = data.get('bonus')
+        bonus_card.score = bonus_card.calculate_score(board)
+        bonus_card.save()
+        return JsonResponse({
+            'status': 'success',
+            'bonus_title': bonus_card.bonus,
+            'bonus_description': BonusCard.BONUSES[bonus_card.bonus],
+            'score': bonus_card.score
+        })
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method: ' + request.method}, status=400)

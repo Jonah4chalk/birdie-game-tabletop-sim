@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 {% load static %}
+{% csrf_token %}
+{{ board.pk|json_script:"board"}}
 <head>
-    <link rel="stylesheet" href="{% static 'aviary/css/bonus_cards.css' %}">
     <link rel="stylesheet" href="{% static 'aviary/css/button.css' %}">
+    <link rel="stylesheet" href="{% static 'aviary/css/bonus_cards.css' %}">
     <script>
         /*to prevent Firefox FOUC, this must be here*/
         let FF_FOUC_FIX;
@@ -11,7 +13,7 @@
 <body>
     <div class="navbar">
         <a href="{% url 'board' board.pk %}" class="button" id="board">Board</a>
-        <a href="" class="button" id="edit">Edit Bonuses</a>
+        <a href="" class="button header" id="edit">Bonus Cards</a>
         <a href="{% url 'end_of_round_goals' board.pk %}" class="button" id="round-goals">End of Round Goals</a>
     </div>
     <div class="body">
@@ -19,21 +21,62 @@
             <div class="bonus-cards">
                 {% for card in board.bonus_cards.all %}
                     <div class="bonus-card">
-                        <label for="bonus-card-{{ card.pk }}">{{ card.get_bonus_display }}</label>
+                        <label for="bonus-card-{{ card.pk }}">{{ card.bonus }}: {{ card.get_bonus_display }}</label>
                         <select id="bonus-card-{{ card.pk }}" name="bonus-card-{{ card.pk }}">
-                            {% for bonus in BonusCard.BONUS_CARDS.items %}
+                            {% for bonus in BonusCard.BONUSES.items %}
                                 <option value="{{ bonus.0 }}" {% if card.bonus == bonus.0 %}selected{% endif %}>
                                     {{ bonus.1 }}
                                 </option>
                             {% endfor %}
                         </select>
-                        <strong>Score: {{ card.score }}</strong>
+                        <strong id="score-{{ card.pk }}">Score: {{ card.score }}</strong>
+                        <a href="{% url 'delete_bonus_card' board.pk card.pk %}" class="button delete">Delete</a>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
             <p>No bonus cards available.</p>
         {% endif %}
-        <button id="add-bonus-card" class="button">Add Bonus Card</button>
+        <a href="{% url 'add_bonus_card' board.pk %}" id="add-bonus-card" class="button">Add Bonus Card</a>
     </div>
+    <script>
+        const board_id = JSON.parse(document.getElementById('board').textContent);
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('select').forEach(function (dropdown) {
+                dropdown.addEventListener('change', function () {
+                    const selectedValue = this.value;
+                    const cardId = this.id.split('-')[2];
+                    fetch("{% url 'update_bonus_card' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify({
+                            'board_pk': board_id,
+                            'card_pk': cardId,
+                            'bonus': selectedValue,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            console.log('Bonus card updated successfully');
+                            // Update DOM
+                            const label = document.querySelector(`label[for="${this.id}"]`);
+                            label.innerHTML = `${data.bonus_title}: ${data.bonus_description}`;
+                            const score = document.querySelector(`strong[id="score-${this.id.split('-')[2]}"]`);
+                            score.innerHTML = `Score: ${data.score}`;
+                        } else {
+                            console.error('Error updating bonus card:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
+    </script>
 </body>

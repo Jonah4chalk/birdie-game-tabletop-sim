@@ -12,8 +12,8 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="" class="button" id="bonus">Bonus Cards</a>
-        <a href="" class="button" id="header">Edit Goals</a>
+        <a href="{% url 'bonus_cards' board.pk %}" class="button" id="bonus">Bonus Cards</a>
+        <a href="" class="button header" id="edit">Edit Goals</a>
         <a href="{% url 'board' board.pk %}" class="button" id="board">Board</a>
     </div>
     <div class="body">

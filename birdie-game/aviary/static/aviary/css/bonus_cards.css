@@ -1,0 +1,19 @@
+a.button#add-bonus-card {
+    width: 20%;
+    background: grey;
+    margin: 5px 5px 5px 0;
+}
+
+.bonus-card {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.bonus-card > * {
+    margin: 0 5px;
+}
+
+label {
+    font-size: 16px;
+}

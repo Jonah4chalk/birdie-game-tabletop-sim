@@ -3,6 +3,15 @@ a {
     text-decoration: none;
 }
 
+.button.delete {
+    background: red;
+    padding: 0 5px;
+    width: auto;
+    height: auto;
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
 a.button {
     -webkit-appearance: button;
     -moz-appearance: button;
@@ -44,4 +53,8 @@ a.button#board {
 .navbar {
     display: flex;
     justify-content: space-between;
+}
+
+.header {
+    cursor: auto;
 }

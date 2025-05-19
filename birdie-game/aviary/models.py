@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 from django.core.validators import MaxValueValidator
 from django.forms import ValidationError
@@ -39,6 +40,7 @@ class BirdCard(models.Model):
         ('f', 'Forward'),
     )
 
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
     nest_size = models.PositiveIntegerField(default=1, validators=[MaxValueValidator(6)])
     nest_type = models.CharField(max_length=1, choices=NEST_TYPES, default='n')
@@ -354,6 +356,9 @@ class BonusCard(models.Model):
     id = models.AutoField(primary_key=True)
     bonus = models.CharField(max_length=50, choices=BONUSES, default='No Bonus')
     score = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.bonus
     
     def calculate_score(self, board):
         score = 0
@@ -361,9 +366,9 @@ class BonusCard(models.Model):
         if self.bonus == 'No Bonus':
             return 0
         elif self.bonus == 'Forester':
-            forest = Habitat.objects.get(habitat_name='forest')
-            grassland = Habitat.objects.get(habitat_name='grassland')
-            wetland = Habitat.objects.get(habitat_name='wetland')
+            forest = Habitat.objects.get(habitat_name='Forest')
+            grassland = Habitat.objects.get(habitat_name='Grassland')
+            wetland = Habitat.objects.get(habitat_name='Wetland')
             for bird in board.get_forest_birds():
                 if bird.habitats.filter(habitat_name=forest.habitat_name).exists() and not bird.habitats.filter(habitat_name=grassland.habitat_name).exists() and not bird.habitats.filter(habitat_name=wetland.habitat_name).exists():
                     count += 1
@@ -372,9 +377,9 @@ class BonusCard(models.Model):
             elif count >= 3:
                 score += 4
         elif self.bonus == 'Prairie Manager':
-            forest = Habitat.objects.get(habitat_name='forest')
-            grassland = Habitat.objects.get(habitat_name='grassland')
-            wetland = Habitat.objects.get(habitat_name='wetland')
+            forest = Habitat.objects.get(habitat_name='Forest')
+            grassland = Habitat.objects.get(habitat_name='Grassland')
+            wetland = Habitat.objects.get(habitat_name='Wetland')
             for bird in board.get_grassland_birds():
                 if bird.habitats.filter(habitat_name=grassland.habitat_name).exists() and not bird.habitats.filter(habitat_name=forest.habitat_name).exists() and not bird.habitats.filter(habitat_name=wetland.habitat_name).exists():
                     count += 1
@@ -383,9 +388,9 @@ class BonusCard(models.Model):
             elif count >= 2:
                 score += 3
         elif self.bonus == 'Wetland Scientist':
-            forest = Habitat.objects.get(habitat_name='forest')
-            grassland = Habitat.objects.get(habitat_name='grassland')
-            wetland = Habitat.objects.get(habitat_name='wetland')
+            forest = Habitat.objects.get(habitat_name='Forest')
+            grassland = Habitat.objects.get(habitat_name='Grassland')
+            wetland = Habitat.objects.get(habitat_name='Wetland')
             for bird in board.get_wetland_birds():
                 if bird.habitats.filter(habitat_name=wetland.habitat_name).exists() and not bird.habitats.filter(habitat_name=forest.habitat_name).exists() and not bird.habitats.filter(habitat_name=grassland.habitat_name).exists():
                     count += 1
@@ -552,3 +557,8 @@ class BonusCard(models.Model):
         else:
             raise ValidationError("Invalid bonus")
         return score
+    
+class BonusCardAddForm(forms.ModelForm):
+    class Meta:
+        model = BonusCard
+        fields = ['bonus']

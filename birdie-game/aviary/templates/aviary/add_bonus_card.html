@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% load static %}
+<head>
+    <script>
+        /*to prevent Firefox FOUC, this must be here*/
+        let FF_FOUC_FIX;
+    </script></head>
+<body>
+    <h1>Add Bonus Card</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button">Add</button>
+    </form>
+</body>
+<a href="{% url 'bonus_cards' board.pk %}" class="button">Back to Bonus Cards</a>
