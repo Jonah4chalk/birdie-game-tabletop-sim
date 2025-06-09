@@ -1,39 +1,70 @@
 .board {
     display: grid;
-    grid-template-columns: 50px 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-gap: 5px;
-    height: 100vh;
-    grid-auto-rows: max-content;
-    grid-auto-columns: max-content;
+    grid-template-rows: 15px repeat(3, 1fr);
+    grid-template-columns: 1fr;
+    row-gap: 5px;
 }
 
-.board > * {
+.habitat {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 15px 15px repeat(5, 1fr);
+    grid-auto-columns: 1fr;
+    grid-auto-rows: 1fr;
+    font-size: 20px;
+    justify-content: center;
+}
+
+.habitat:not(#play-a-bird) {
+    min-height: 40vh;
+}
+
+#play-a-bird {
+    width: auto;
+    justify-content: left;
+    height: 15px;
+
+}
+/* .board > * {
     border: 1px solid rgba(0, 0, 0, 0.8);
     font-size: 20px;
     text-align: center;
     position: relative;
-}
+} */
 
 .forest > *, .grassland > *, .wetland > * {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    justify-items: center;
 }
 
 .forest {
     background-color: rgba(44, 233, 2, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.8);
 }
 
 .grassland {
     background-color: rgba(233, 214, 2, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.8);
 }
 
 .wetland {
     background-color: rgba(2, 152, 233, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.8);
 }
 
 .nectar {
     background-color: pink;
+    padding: 0px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cubes {
+    background-color: rgb(179, 255, 0);
+    padding: 0px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

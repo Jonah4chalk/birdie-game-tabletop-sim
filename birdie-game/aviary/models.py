@@ -277,6 +277,11 @@ class Board(models.Model):
     end_of_round_3_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal3", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
     end_of_round_4_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal4", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
     bonus_cards = models.ManyToManyField("BonusCard", related_name="bonus_cards", blank=True)
+    play_a_bird_cubes = models.PositiveIntegerField(default=0)
+    gain_food_cubes = models.PositiveIntegerField(default=0)
+    lay_eggs_cubes = models.PositiveIntegerField(default=0)
+    draw_cards_cubes = models.PositiveIntegerField(default=0)
+
     def __str__(self):
         return f"Board {self.pk}"
     
