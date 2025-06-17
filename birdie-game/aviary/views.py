@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import BirdCard, Board, BonusCard, BonusCardAddForm, EndRoundGoal
+from .models import BirdCard, BirdCardTemplate, Board, BonusCard, BonusCardAddForm, EndRoundGoal, BoardUpdateForm
 from django.http import Http404, JsonResponse
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
@@ -176,3 +176,48 @@ def update_bonus_card(request):
         })
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method: ' + request.method}, status=400)
+    
+def update_board(request, pk):
+    board = get_object_or_404(Board, pk=pk)
+    if request.method == 'POST':
+        form = BoardUpdateForm(request.POST)
+        if form.is_valid():
+            for field, value in form.cleaned_data.items():
+                if 'nectar' in field:
+                    setattr(board, field, value)
+                else:
+                    # handle bird card
+                    # if bird card didn't change, a bird card should not be created
+                    original_bird = getattr(board, field, None)
+                    if (getattr(original_bird, 'name', None) == value):
+                        continue
+                    elif not value:
+                        setattr(board, field, None)
+                        original_bird.delete()
+                    else:
+                        # otherwise, create a new bird card
+                        template = BirdCardTemplate.objects.get(name=value)
+                        new_bird = BirdCard.objects.create(
+                            name=value,
+                            nest_size=template.nest_size,
+                            nest_type=template.nest_type,
+                            wingspan=template.wingspan,
+                            habitats=template.habitats,
+                            feathers=template.feathers,
+                            ability_desc=template.ability_desc,
+                            ability_type=template.ability_type,
+                            direction_facing=template.direction_facing,
+                            first_food=template.first_food,
+                            second_food=template.second_food,
+                            third_food=template.third_food,
+                            costs_one_food=template.costs_one_food,
+                        )
+                        # add the new bird card to the space on the board
+                        setattr(board, field, new_bird)
+            board.save()
+            return reverse_lazy("board", kwargs={"pk": pk})
+    else:
+        form = BoardUpdateForm(instance=board)
+
+    return 
+        

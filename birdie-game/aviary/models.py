@@ -12,6 +12,105 @@ class Habitat(models.Model):
 
     def __str__(self):
         return self.habitat_name
+    
+class Food(models.Model):
+    id = models.AutoField(primary_key=True)
+    food_name = models.CharField(max_length=6, default="default")
+
+    def __str__(self):
+        return self.food_name
+
+class FoodJunction(models.Model):
+    card = models.ForeignKey("BirdCard", on_delete=models.CASCADE)
+    food = models.ManyToManyField(Food)
+
+    def __str__(self):
+        food_str = ""
+        for f in self.food.all():
+            food_str = food_str + f.food_name + " or "
+        food_str = food_str[:-4]
+        return self.card.name + " eats " + food_str
+    
+    class Meta:
+        ordering = ['card__name']
+
+class BirdCardTemplate(models.Model):
+    """
+    This is a template model for BirdCard.
+    It is used to create the BirdCard model with the necessary fields.
+    """
+    # nest types
+    NEST_TYPES = (
+        ('g', 'Ground'),
+        ('c', 'Cavity'),
+        ('b', 'Bowl'),
+        ('s', 'Stick'),
+        ('n', 'None'),
+        ('a', 'Star'),
+    )
+
+    # ability types
+    ABILITY_TYPES = (
+        ('w', 'White'),
+        ('b', 'Brown'),
+        ('t', 'Teal'),
+        ('y', 'Yellow'),
+        ('p', 'Pink'),
+    )
+
+    # direction facing
+    FACING_DIRECTION = (
+        ('r', 'Right'),
+        ('l', 'Left'),
+        ('f', 'Forward'),
+    )
+    
+    name = models.CharField(max_length=50, default="Bird")
+    nest_size = models.PositiveIntegerField(default=1, validators=[MaxValueValidator(6)])
+    nest_type = models.CharField(max_length=1, choices=NEST_TYPES, default='n')
+    wingspan = models.PositiveIntegerField(default=1)
+    feathers = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(9)])
+    ability_desc = models.CharField(max_length=200, default="No ability")
+    ability_type = models.CharField(max_length=1, choices=ABILITY_TYPES, default='w')
+    direction_facing = models.CharField(max_length=1, choices=FACING_DIRECTION, default='f')
+    habitats = models.ManyToManyField(Habitat)
+    first_food = models.ManyToManyField("Food", related_name="birdcard_template_first_food", default=None, blank=True)
+    second_food = models.ManyToManyField("Food", related_name="birdcard_template_second_food", default=None, blank=True)
+    third_food = models.ManyToManyField("Food", related_name="birdcard_template_third_food", default=None, blank=True)
+    costs_one_food = models.BooleanField(default=False, help_text="Does this bird cost one food to play?")
+
+    
+    
+    def __str__(self):
+        return self.name
+    
+# each field name should be the same as a field the BirdCard model
+class BoardUpdateForm(forms.Form):
+    forest_nectar = forms.IntegerField(min_value=0, label="Forest Nectar")
+    forest_1 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 1")
+    forest_2 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 2")
+    forest_3 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 3")
+    forest_4 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 4")
+    forest_5 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 5")
+
+    grassland_nectar = forms.IntegerField(min_value=0, label="Grassland Nectar")
+    grassland_1 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 1")
+    grassland_2 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 2")
+    grassland_3 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 3")
+    grassland_4 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 4")
+    grassland_5 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 5")
+
+    wetland_nectar = forms.IntegerField(min_value=0, label="Wetland Nectar")
+    wetland_1 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 1")
+    wetland_2 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 2")
+    wetland_3 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 3")
+    wetland_4 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 4")
+    wetland_5 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 5")
+
+    play_a_bird_cubes = forms.IntegerField(min_value=0, label="Cubes on 'Play a Bird'")
+    gain_food_cubes = forms.IntegerField(min_value=0, label="Cubes on 'Gain Food'")
+    lay_eggs_cubes = forms.IntegerField(min_value=0, label="Cubes on 'Lay Eggs'")
+    draw_bird_cards_cubes = forms.IntegerField(min_value=0, label="Cubes on 'Draw Bird Cards'")
 
 class BirdCard(models.Model):
     # nest types
@@ -49,10 +148,14 @@ class BirdCard(models.Model):
     feathers = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(9)])
     ability_desc = models.CharField(max_length=200)
     ability_type = models.CharField(max_length=1, choices=ABILITY_TYPES, default='w')
+    direction_facing = models.CharField(max_length=1, choices=FACING_DIRECTION, default='f')
+    first_food = models.ManyToManyField("Food", related_name="birdcard_first_food", default=None, blank=True)
+    second_food = models.ManyToManyField("Food", related_name="birdcard_second_food", default=None, blank=True)
+    third_food = models.ManyToManyField("Food", related_name="birdcard_third_food", default=None, blank=True)
+    costs_one_food = models.BooleanField(default=False, help_text="Does this bird cost one food to play?")
     eggs = models.PositiveIntegerField(default=0)
     cached_food = models.PositiveIntegerField(default=0)
     tucked_cards = models.PositiveIntegerField(default=0)
-    direction_facing = models.CharField(max_length=1, choices=FACING_DIRECTION, default='f')
 
     def __str__(self):
         return self.name
@@ -280,7 +383,7 @@ class Board(models.Model):
     play_a_bird_cubes = models.PositiveIntegerField(default=0)
     gain_food_cubes = models.PositiveIntegerField(default=0)
     lay_eggs_cubes = models.PositiveIntegerField(default=0)
-    draw_cards_cubes = models.PositiveIntegerField(default=0)
+    draw_bird_cards_cubes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"Board {self.pk}"
@@ -306,27 +409,6 @@ class Board(models.Model):
         return list(filter(None, [
             self.wetland_1, self.wetland_2, self.wetland_3, self.wetland_4, self.wetland_5
         ]))
-
-class Food(models.Model):
-    id = models.AutoField(primary_key=True)
-    food_name = models.CharField(max_length=6, default="default")
-
-    def __str__(self):
-        return self.food_name
-
-class FoodJunction(models.Model):
-    card = models.ForeignKey("BirdCard", on_delete=models.CASCADE)
-    food = models.ManyToManyField(Food)
-
-    def __str__(self):
-        food_str = ""
-        for f in self.food.all():
-            food_str = food_str + f.food_name + " or "
-        food_str = food_str[:-4]
-        return self.card.name + " eats " + food_str
-    
-    class Meta:
-        ordering = ['card__name']
 
 class BonusCard(models.Model):
     BONUSES = {
