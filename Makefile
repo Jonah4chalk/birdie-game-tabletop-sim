@@ -1,6 +1,6 @@
 .PHONY: install run clean
 
-VENV_DIR = .venv
+VENV_DIR = venv
 
 install: $(VENV_DIR)/bin/activate
 	$(VENV_DIR)/bin/pip install -r requirements.txt
