@@ -98,7 +98,7 @@
         
 
         <div class="habitat">
-            <div class="cubes">{{ board.draw_cards_cubes }}</div>
+            <div class="cubes">{{ board.draw_bird_cards_cubes }}</div>
             <div class="nectar">{{ board.wetland_nectar }}</div>
             {% if board.wetland_1 is not None %}
             <a href="{% url 'birdcard_update' board.pk board.wetland_1.pk %}">
