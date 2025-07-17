@@ -207,7 +207,7 @@ class EndRoundGoal(models.Model):
     }
     id = models.AutoField(primary_key=True)
     goal = models.CharField(max_length=50, choices=GOALS, default='No Goal')
-    score = models.PositiveIntegerField(default=0)
+    score = models.PositiveIntegerField(default=0, blank=True)
 
     def __str__(self):
         return self.goal
@@ -349,11 +349,6 @@ class EndRoundGoal(models.Model):
         else:
             raise ValidationError("Invalid goal")
         return score
-    
-    @classmethod
-    def create_default_goal(cls):
-        goal = cls.objects.create(goal='No Goal')
-        return goal.id
 
     
 class Board(models.Model):
@@ -375,10 +370,10 @@ class Board(models.Model):
     wetland_3 = models.ForeignKey("BirdCard", related_name="Wetland3", on_delete=models.SET_NULL, null=True, blank=True)
     wetland_4 = models.ForeignKey("BirdCard", related_name="Wetland4", on_delete=models.SET_NULL, null=True, blank=True)
     wetland_5 = models.ForeignKey("BirdCard", related_name="Wetland5", on_delete=models.SET_NULL, null=True, blank=True)
-    end_of_round_1_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal1", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
-    end_of_round_2_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal2", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
-    end_of_round_3_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal3", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
-    end_of_round_4_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal4", on_delete=models.SET_DEFAULT, default=EndRoundGoal.create_default_goal, null=True, blank=True) 
+    end_of_round_1_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal1", on_delete=models.SET_NULL, null=True, blank=True) 
+    end_of_round_2_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal2", on_delete=models.SET_NULL, null=True, blank=True) 
+    end_of_round_3_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal3", on_delete=models.SET_NULL, null=True, blank=True) 
+    end_of_round_4_goal = models.ForeignKey("EndRoundGoal", related_name="EndRoundGoal4", on_delete=models.SET_NULL, null=True, blank=True) 
     bonus_cards = models.ManyToManyField("BonusCard", related_name="bonus_cards", blank=True)
     play_a_bird_cubes = models.PositiveIntegerField(default=0)
     gain_food_cubes = models.PositiveIntegerField(default=0)

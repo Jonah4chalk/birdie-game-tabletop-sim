@@ -15,21 +15,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='board',
             name='end_of_round_1_goal',
-            field=models.ForeignKey(blank=True, default=aviary.models.EndRoundGoal.create_default_goal, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='EndRoundGoal1', to='aviary.endroundgoal'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='EndRoundGoal1', to='aviary.endroundgoal'),
         ),
         migrations.AddField(
             model_name='board',
             name='end_of_round_2_goal',
-            field=models.ForeignKey(blank=True, default=aviary.models.EndRoundGoal.create_default_goal, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='EndRoundGoal2', to='aviary.endroundgoal'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='EndRoundGoal2', to='aviary.endroundgoal'),
         ),
         migrations.AddField(
             model_name='board',
             name='end_of_round_3_goal',
-            field=models.ForeignKey(blank=True, default=aviary.models.EndRoundGoal.create_default_goal, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='EndRoundGoal3', to='aviary.endroundgoal'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='EndRoundGoal3', to='aviary.endroundgoal'),
         ),
         migrations.AddField(
             model_name='board',
             name='end_of_round_4_goal',
-            field=models.ForeignKey(blank=True, default=aviary.models.EndRoundGoal.create_default_goal, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='EndRoundGoal4', to='aviary.endroundgoal'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='EndRoundGoal4', to='aviary.endroundgoal'),
         ),
     ]
