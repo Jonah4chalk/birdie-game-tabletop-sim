@@ -206,7 +206,7 @@ class EndRoundGoal(models.Model):
         'CPLAYB': 'Cubes on \"Play a Bird\"',
     }
     id = models.AutoField(primary_key=True)
-    goal = models.CharField(max_length=50, choices=GOALS, default='No Goal')
+    goal = models.CharField(max_length=50, choices=GOALS.items(), default='No Goal')
     score = models.PositiveIntegerField(default=0, blank=True)
 
     def __str__(self):
@@ -436,7 +436,7 @@ class BonusCard(models.Model):
         'Visionary Leader': 'Bird cards in hand at the end of the game', # 5-7: 4pts, 8+: 7pts
     }
     id = models.AutoField(primary_key=True)
-    bonus = models.CharField(max_length=50, choices=BONUSES, default='No Bonus')
+    bonus = models.CharField(max_length=50, choices=BONUSES.items(), default='No Bonus')
     score = models.PositiveIntegerField(default=0)
 
     def __str__(self):
