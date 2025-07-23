@@ -132,7 +132,7 @@
                                 document.getElementById('round-3-score').textContent = "Score: " + data.scores[2];
                                 document.getElementById('round-4-score').textContent = "Score: " + data.scores[3];
                             } else {
-                                console.error('Error updating goal:', data.message);
+                                console.error('Error updating goal: ', data.message);
                             }
                         })
                         .catch(error => {

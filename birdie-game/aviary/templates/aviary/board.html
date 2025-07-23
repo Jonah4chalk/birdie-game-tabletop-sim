@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load card_info %}
+{{ board.pk|json_script:"board"}}
 <!-- {% debug %} -->
 <head>
     <link rel="stylesheet" href="{% static 'aviary/css/board.css' %}">
@@ -14,11 +15,11 @@
     </div>
     <div class="board">
         <div class="habitat" id="play-a-bird">
-            <div class="cubes">{{ board.play_a_bird_cubes }}</div>
+            <div class="cubes" id="cubes-play-a-bird">{{ board.play_a_bird_cubes }}</div>
         </div>
         <div class="habitat">
-            <div class="cubes">{{ board.gain_food_cubes }}</div>
-            <div class="nectar">{{ board.forest_nectar }}</div>
+            <div class="cubes" id="cubes-gain-food">{{ board.gain_food_cubes }}</div>
+            <div class="nectar" id="forest-nectar">{{ board.forest_nectar }}</div>
             {% if board.forest_1 is not None %}
                 <a href="{% url 'birdcard_update' board.pk board.forest_1.pk %}">
             {% endif %}
@@ -57,8 +58,8 @@
         </div>
         
         <div class="habitat">
-            <div class="cubes">{{ board.lay_eggs_cubes }}</div>
-            <div class="nectar">{{ board.grassland_nectar }}</div>
+            <div class="cubes" id="cubes-lay-eggs">{{ board.lay_eggs_cubes }}</div>
+            <div class="nectar" id="grassland-nectar">{{ board.grassland_nectar }}</div>
             {% if board.grassland_1 is not None %}
                 <a href="{% url 'birdcard_update' board.pk board.grassland_1.pk %}">
             {% endif %}
@@ -98,8 +99,8 @@
         
 
         <div class="habitat">
-            <div class="cubes">{{ board.draw_bird_cards_cubes }}</div>
-            <div class="nectar">{{ board.wetland_nectar }}</div>
+            <div class="cubes" id="cubes-draw-bird-cards">{{ board.draw_bird_cards_cubes }}</div>
+            <div class="nectar" id="wetland-nectar">{{ board.wetland_nectar }}</div>
             {% if board.wetland_1 is not None %}
             <a href="{% url 'birdcard_update' board.pk board.wetland_1.pk %}">
             {% endif %}
@@ -137,4 +138,85 @@
             {% endif %}
         </div>
     </div>
+    <script>
+        const board_id = JSON.parse(document.getElementById('board').textContent);
+        function updateCube(action, value) {
+            fetch("{% url 'edit_cube_count' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({action: action, value: value, board_id: board_id})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update DOM
+                    document.getElementById('cubes-play-a-bird').textContent = data.values[0];
+                    document.getElementById('cubes-gain-food').textContent = data.values[1];
+                    document.getElementById('cubes-lay-eggs').textContent = data.values[2];
+                    document.getElementById('cubes-draw-bird-cards').textContent = data.values[3];
+                } else {
+                    console.error('Error updating cube count: ', data.message);
+                }
+            })
+        }
+
+        function updateNectar(habitat, value) {
+            fetch("{% url 'edit_nectar_count' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({habitat: habitat, value: value, board_id: board_id})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update DOM
+                    document.getElementById('forest-nectar').textContent = data.values[0];
+                    document.getElementById('grassland-nectar').textContent = data.values[1];
+                    document.getElementById('wetland-nectar').textContent = data.values[2];
+                } else {
+                    console.error('Error updating nectar count: ', data.message);
+                }
+            })
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const cubes = document.getElementsByClassName('cubes')
+            for (let i = 0; i < cubes.length; i++) {
+                const element = cubes[i]
+                element.addEventListener('click', (e) => {
+                    // extract action from id string.  'this' should be Element type
+                    const action = element.id.substr(6)
+                    updateCube(action, 1)
+                });
+                element.addEventListener('contextmenu', (e) => {
+                    e.preventDefault()
+                    const action = element.id.substr(6)
+                    updateCube(action, -1)
+                });
+            }
+
+            const nectars = document.getElementsByClassName('nectar')
+            for (let i = 0; i < nectars.length; i++) {
+                const element = nectars[i]
+                element.addEventListener('click', (e) => {
+                    const habitat = element.id.slice(0, -7);
+                    updateNectar(habitat, 1);
+                });
+                element.addEventListener('contextmenu', (e) => {
+                    e.preventDefault()
+                    const habitat = element.id.slice(0, -7);
+                    updateNectar(habitat, -1);
+                });
+            }
+        }
+
+        
+    )
+    </script>
 </body>

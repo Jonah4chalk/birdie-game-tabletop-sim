@@ -107,10 +107,10 @@ class BoardUpdateForm(forms.Form):
     wetland_4 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 4")
     wetland_5 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 5")
 
-    play_a_bird_cubes = forms.IntegerField(min_value=0, label="Cubes on 'Play a Bird'")
-    gain_food_cubes = forms.IntegerField(min_value=0, label="Cubes on 'Gain Food'")
-    lay_eggs_cubes = forms.IntegerField(min_value=0, label="Cubes on 'Lay Eggs'")
-    draw_bird_cards_cubes = forms.IntegerField(min_value=0, label="Cubes on 'Draw Bird Cards'")
+    play_a_bird_cubes = forms.IntegerField(min_value=0, max_value=8, label="Cubes on 'Play a Bird'")
+    gain_food_cubes = forms.IntegerField(min_value=0, max_value=8, label="Cubes on 'Gain Food'")
+    lay_eggs_cubes = forms.IntegerField(min_value=0, max_value=8, label="Cubes on 'Lay Eggs'")
+    draw_bird_cards_cubes = forms.IntegerField(min_value=0, max_value=8, label="Cubes on 'Draw Bird Cards'")
 
 class BirdCard(models.Model):
     # nest types
@@ -382,6 +382,13 @@ class Board(models.Model):
 
     def __str__(self):
         return f"Board {self.pk}"
+    
+    def save(self, *args, **kwargs):
+        self.play_a_bird_cubes = max(0, min(8, self.play_a_bird_cubes))
+        self.gain_food_cubes = max(0, min(8, self.gain_food_cubes))
+        self.lay_eggs_cubes = max(0, min(8, self.lay_eggs_cubes))
+        self.draw_bird_cards_cubes = max(0, min(8, self.draw_bird_cards_cubes))
+        super().save(*args, **kwargs)
     
     def get_all_birds(self):
         return list(filter(None, [

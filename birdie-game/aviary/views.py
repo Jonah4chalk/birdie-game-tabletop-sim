@@ -219,5 +219,61 @@ def update_board(request, pk):
     else:
         form = BoardUpdateForm(instance=board)
 
-    return 
+    return None
+
+def edit_cube_count(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        board_pk = data.get('board_id')
+        action = data.get('action')
+        value = data.get('value')
+        board = get_object_or_404(Board, pk=board_pk)
+        if action == 'play-a-bird':
+            board.play_a_bird_cubes += value
+        elif action == 'gain-food':
+            board.gain_food_cubes += value
+        elif action == 'lay-eggs':
+            board.lay_eggs_cubes += value
+        elif action == 'draw-bird-cards':
+            board.draw_bird_cards_cubes += value
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid action'}, status=422)
+        board.save()
+        return JsonResponse({
+            'status': 'success',
+            'values': [
+                board.play_a_bird_cubes,
+                board.gain_food_cubes,
+                board.lay_eggs_cubes,
+                board.draw_bird_cards_cubes
+            ]}
+        )
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method: ' + request.method}, status=400)
         
+def edit_nectar_count(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        board_pk = data.get('board_id')
+        habitat = data.get('habitat')
+        value = data.get('value')
+        board = get_object_or_404(Board, pk=board_pk)
+        if habitat == 'forest':
+            board.forest_nectar += value
+        elif habitat == 'grassland':
+            board.grassland_nectar += value
+        elif habitat == 'wetland':
+            board.wetland_nectar += value
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid habitat'}, status=422)
+        board.save()
+        return JsonResponse({
+            'status': 'success',
+            'values': [
+                board.forest_nectar,
+                board.grassland_nectar,
+                board.wetland_nectar
+            ]}
+        )
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method: ' + request.method}, status=400)
