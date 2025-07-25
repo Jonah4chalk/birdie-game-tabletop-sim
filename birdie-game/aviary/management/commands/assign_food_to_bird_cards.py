@@ -28,5 +28,5 @@ class Command(BaseCommand):
                     
 
         self.stdout.write(
-            self.style.SUCCESS(f'Successfully updated {len(birds).keys()} birds')
+            self.style.SUCCESS(f'Successfully updated {len(birds.keys())} birds')
         )
