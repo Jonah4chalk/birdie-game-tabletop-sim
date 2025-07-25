@@ -1,13 +1,13 @@
 import json
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import BirdCard, BirdCardTemplate, Board, BonusCard, BonusCardAddForm, EndRoundGoal, BoardUpdateForm
+from .models import BirdCard, BirdCardTemplate, Board, BonusCard, BonusCardAddForm, EndRoundGoal, BoardUpdateForm, FoodJunction
 from django.http import Http404, JsonResponse
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 from django import forms
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 
 
 def index(request):
@@ -182,44 +182,72 @@ def update_board(request, pk):
     if request.method == 'POST':
         form = BoardUpdateForm(request.POST)
         if form.is_valid():
-            for field, value in form.cleaned_data.items():
-                if 'nectar' in field:
-                    setattr(board, field, value)
+            for field, template in form.cleaned_data.items():
+                # handle bird card
+                # if bird card didn't change, a bird card should not be created
+                original_bird = getattr(board, field, None)
+                if template and original_bird and (template.name == original_bird.name):
+                    continue
+                elif not template and original_bird:
+                    setattr(board, field, None)
+                    original_bird.delete()
+                elif not template:
+                    continue
                 else:
-                    # handle bird card
-                    # if bird card didn't change, a bird card should not be created
-                    original_bird = getattr(board, field, None)
-                    if (getattr(original_bird, 'name', None) == value):
-                        continue
-                    elif not value:
-                        setattr(board, field, None)
-                        original_bird.delete()
-                    else:
-                        # otherwise, create a new bird card
-                        template = BirdCardTemplate.objects.get(name=value)
-                        new_bird = BirdCard.objects.create(
-                            name=value,
-                            nest_size=template.nest_size,
-                            nest_type=template.nest_type,
-                            wingspan=template.wingspan,
-                            habitats=template.habitats,
-                            feathers=template.feathers,
-                            ability_desc=template.ability_desc,
-                            ability_type=template.ability_type,
-                            direction_facing=template.direction_facing,
-                            first_food=template.first_food,
-                            second_food=template.second_food,
-                            third_food=template.third_food,
-                            costs_one_food=template.costs_one_food,
+                    # otherwise, create a new bird card
+                    new_bird = BirdCard.objects.create(
+                        name=template.name,
+                        nest_size=template.nest_size,
+                        nest_type=template.nest_type,
+                        wingspan=template.wingspan,
+                        feathers=template.feathers,
+                        ability_desc=template.ability_desc,
+                        ability_type=template.ability_type,
+                        direction_facing=template.direction_facing,
+                        first_food=template.first_food,
+                        second_food=template.second_food,
+                        third_food=template.third_food,
+                        costs_one_food=template.costs_one_food,
+                    )
+                    new_bird.habitats.set(template.habitats.all())
+                    # create related food junctions for this bird as well
+                    foods = [new_bird.first_food, new_bird.second_food, new_bird.third_food]
+                    filtered_foods = [f for f in foods if f is not None]
+                    if template and template.costs_one_food:
+                        junction = FoodJunction.objects.create(
+                            card=new_bird
                         )
-                        # add the new bird card to the space on the board
-                        setattr(board, field, new_bird)
+                        junction.food.add(filtered_foods)
+                    elif template and not template.costs_one_food:
+                        for f in filtered_foods:
+                            junction = FoodJunction.objects.create(
+                                card=new_bird
+                            )
+                            junction.food.add(f)
+                    # add the new bird card to the space on the board
+                    setattr(board, field, new_bird)
             board.save()
-            return reverse_lazy("board", kwargs={"pk": pk})
+            return HttpResponseRedirect(reverse_lazy("board", kwargs={"pk": pk}))
     else:
-        form = BoardUpdateForm(instance=board)
+        form = BoardUpdateForm(initial={
+            'forest_1': None if not board.forest_1 else BirdCardTemplate.objects.get(name=board.forest_1.name),
+            'forest_2': None if not board.forest_2 else BirdCardTemplate.objects.get(name=board.forest_2.name),
+            'forest_3': None if not board.forest_3 else BirdCardTemplate.objects.get(name=board.forest_3.name),
+            'forest_4': None if not board.forest_4 else BirdCardTemplate.objects.get(name=board.forest_4.name),
+            'forest_5': None if not board.forest_5 else BirdCardTemplate.objects.get(name=board.forest_5.name),
+            'grassland_1': None if not board.grassland_1 else BirdCardTemplate.objects.get(name=board.grassland_1.name),
+            'grassland_2': None if not board.grassland_2 else BirdCardTemplate.objects.get(name=board.grassland_2.name),
+            'grassland_3': None if not board.grassland_3 else BirdCardTemplate.objects.get(name=board.grassland_3.name),
+            'grassland_4': None if not board.grassland_4 else BirdCardTemplate.objects.get(name=board.grassland_4.name),
+            'grassland_5': None if not board.grassland_5 else BirdCardTemplate.objects.get(name=board.grassland_5.name),
+            'wetland_1': None if not board.wetland_1 else BirdCardTemplate.objects.get(name=board.wetland_1.name),
+            'wetland_2': None if not board.wetland_2 else BirdCardTemplate.objects.get(name=board.wetland_2.name),
+            'wetland_3': None if not board.wetland_3 else BirdCardTemplate.objects.get(name=board.wetland_3.name),
+            'wetland_4': None if not board.wetland_4 else BirdCardTemplate.objects.get(name=board.wetland_4.name),
+            'wetland_5': None if not board.wetland_5 else BirdCardTemplate.objects.get(name=board.wetland_5.name),
+        })
 
-    return None
+    return render(request, 'aviary/update_board.html', {'form': form, 'board': board})
 
 def edit_cube_count(request):
     if request.method == 'POST':

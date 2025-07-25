@@ -79,38 +79,28 @@ class BirdCardTemplate(models.Model):
     third_food = models.ForeignKey("Food", related_name="birdcard_template_third_food", default=None, on_delete=models.SET_NULL, null=True)
     costs_one_food = models.BooleanField(default=False, help_text="Does this bird cost one food to play?")
 
-    
-    
     def __str__(self):
         return self.name
     
 # each field name should be the same as a field the BirdCard model
 class BoardUpdateForm(forms.Form):
-    forest_nectar = forms.IntegerField(min_value=0, label="Forest Nectar")
     forest_1 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 1")
     forest_2 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 2")
     forest_3 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 3")
     forest_4 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 4")
     forest_5 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Forest Bird 5")
 
-    grassland_nectar = forms.IntegerField(min_value=0, label="Grassland Nectar")
     grassland_1 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 1")
     grassland_2 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 2")
     grassland_3 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 3")
     grassland_4 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 4")
     grassland_5 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Grassland Bird 5")
 
-    wetland_nectar = forms.IntegerField(min_value=0, label="Wetland Nectar")
     wetland_1 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 1")
     wetland_2 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 2")
     wetland_3 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 3")
     wetland_4 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 4")
     wetland_5 = forms.ModelChoiceField(queryset=BirdCardTemplate.objects.all(), required=False, label="Wetland Bird 5")
-
-    play_a_bird_cubes = forms.IntegerField(min_value=0, max_value=8, label="Cubes on 'Play a Bird'")
-    gain_food_cubes = forms.IntegerField(min_value=0, max_value=8, label="Cubes on 'Gain Food'")
-    lay_eggs_cubes = forms.IntegerField(min_value=0, max_value=8, label="Cubes on 'Lay Eggs'")
-    draw_bird_cards_cubes = forms.IntegerField(min_value=0, max_value=8, label="Cubes on 'Draw Bird Cards'")
 
 class BirdCard(models.Model):
     # nest types

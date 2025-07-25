@@ -4,9 +4,9 @@ register = template.Library()
 from django.http import Http404
 
 @register.inclusion_tag("../templates/aviary/birdcard.html")
-def card_info(bird):
+def card_info(bird_pk):
     try:
-        birdcard = BirdCard.objects.get(name=bird)
+        birdcard = BirdCard.objects.get(pk=bird_pk)
     except BirdCard.DoesNotExist:
         return {
             "bird": None,
